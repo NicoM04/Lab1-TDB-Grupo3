@@ -9,9 +9,9 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Calificacion {
-    private Long idCalificacion;
-    private Long idRepartidor;
+    private Integer id_calificacion;
+    private Integer id_repartidor;
     private Integer puntuacion;
     private String comentario;
-    private LocalDate fechaCalificacion;
+    private LocalDate fecha_calificacion;
 }

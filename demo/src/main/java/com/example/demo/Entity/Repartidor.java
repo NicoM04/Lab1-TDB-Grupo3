@@ -1,19 +1,19 @@
 package com.example.demo.Entity;
-import java.time.LocalDate;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Repartidor {
-    private Long idRepartidor;
-    private String nombreRepartidor;
+    private Integer id_repartidor;
+    private String nombre_repartidor;
     private String rut;
     private String telefono;
-    private LocalDate fechaContratacion;
+    private LocalDate fecha_contratacion;
     private Boolean activo;
-    private Integer cantidadEntregas;
-    private Integer puntuacion;
+    private Integer cantidad_entregas;
 }

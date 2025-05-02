@@ -1,6 +1,5 @@
 package com.example.demo.Entity;
 
-import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,10 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Detalle_pedido {
-    private Long idDetalle;
-
-    private Long idProducto;
+public class DetalleDePedido {
+    private Integer id_detalle;
+    private Integer id_producto;
+    private Integer id_pedido;
     private Integer cantidad;
-    private BigDecimal subtotal;
+    private Double subtotal;
 }

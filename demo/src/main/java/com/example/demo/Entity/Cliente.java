@@ -1,22 +1,19 @@
 package com.example.demo.Entity;
 
-import java.time.LocalDate;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Cliente {
-
-        private Long idCliente;
-        private String nombreCliente;
-        private String contrasenaCliente;
-        private String correoCliente;
+        private Integer id_cliente;
+        private String nombre_cliente;
+        private String contrasena_cliente;
+        private String correo_cliente;
         private String direccion;
         private String telefono;
-        private LocalDate fechaRegistro;
-
+        private LocalDate fecha_registro;
 }

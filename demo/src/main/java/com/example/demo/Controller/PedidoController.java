@@ -1,0 +1,61 @@
+package com.example.demo.Controller;
+
+import com.example.demo.DTO.PedidoCompletoDTO;
+import com.example.demo.Entity.Pedido;
+import com.example.demo.Service.PedidoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.sql.Date;
+import java.util.List;
+
+@RestController
+@RequestMapping("/pedido")
+@CrossOrigin("*")
+public class PedidoController {
+
+    @Autowired
+    private PedidoService pedidoService;
+
+    @PostMapping("/create")
+    public Pedido crearPedido(@RequestBody Pedido pedido) {
+        return pedidoService.crearPedido(pedido);
+    }
+
+    @GetMapping("/getAll")
+    public List<Pedido> obtenerTodos() {
+        return pedidoService.obtenerTodos();
+    }
+
+    // Obtener un pedido por ID
+    @GetMapping("/getById/{id}")
+    public ResponseEntity<Pedido> obtenerPorId(@PathVariable("id") Integer id) {
+        Pedido pedido = pedidoService.getById(id);
+        if (pedido == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);  // Si no se encuentra el pedido
+        }
+        return new ResponseEntity<>(pedido, HttpStatus.OK);
+    }
+
+    @PutMapping("/update/{id}")
+    public String actualizarPedido(@RequestBody Pedido pedido, @PathVariable Integer id) {
+        return pedidoService.actualizarPedido(pedido, id);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public void eliminarPedido(@PathVariable Integer id) {
+        pedidoService.eliminarPedido(id);
+    }
+
+    @PostMapping("/registrar")
+    public ResponseEntity<String> registrarPedido(@RequestBody PedidoCompletoDTO pedido) {
+        try {
+            pedidoService.registrarPedido(pedido);
+            return ResponseEntity.ok("Pedido registrado correctamente.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error al registrar pedido: " + e.getMessage());
+        }
+    }
+}

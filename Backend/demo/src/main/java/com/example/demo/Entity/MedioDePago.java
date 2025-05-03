@@ -13,4 +13,6 @@ public class MedioDePago {
     private String metodo_pago;
     private LocalDate fecha_pago;
     private Integer monto_total;
+
+    private Integer id_pedido; // Aunque hay que quitarlo, lo dejo para que me funcione por como estan las tablas...
 }

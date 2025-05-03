@@ -106,7 +106,7 @@ public class ClienteRepositoryImp implements ClienteRepository {
         }
 
         try {
-            // Llamar al método findByCorreo para obtener al cliente desde la base de datos
+            // Llamar al metodo findByCorreo para obtener al cliente desde la base de datos
             ResponseEntity<Cliente> response = findByCorreo(correo_cliente); // Obtener el ResponseEntity con el cliente
             Cliente cliente = response.getBody(); // Obtener el cliente de la respuesta
 

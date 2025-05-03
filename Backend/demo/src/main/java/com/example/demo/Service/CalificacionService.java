@@ -1,0 +1,37 @@
+package com.example.demo.Service;
+
+import com.example.demo.Entity.Calificacion;
+import com.example.demo.Entity.DetalleDePedido;
+import com.example.demo.Repository.CalificacionRepository;
+import com.example.demo.Repository.DetalleDePedidoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class CalificacionService {
+
+    @Autowired
+    private CalificacionRepository calificacionRepository;
+
+    public Calificacion crear(Calificacion calificacion) {
+        return calificacionRepository.crear(calificacion);
+    }
+
+    public List<Calificacion> getall() {
+        return calificacionRepository.getAll();
+    }
+
+    public Calificacion findById(Integer id) {
+        return calificacionRepository.findById(id);
+    }
+
+    public String update(Calificacion calificacion, Integer id){
+        return calificacionRepository.update(calificacion, id);
+    }
+
+    public void delete(Integer id) {
+        calificacionRepository.delete(id);
+    }
+}

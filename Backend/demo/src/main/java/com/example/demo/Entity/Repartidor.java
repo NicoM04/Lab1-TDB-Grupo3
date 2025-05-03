@@ -16,4 +16,6 @@ public class Repartidor {
     private LocalDate fecha_contratacion;
     private Boolean activo;
     private Integer cantidad_entregas;
+
+    private Integer puntuacion; // Aunque hay que quitarlo, lo dejo para que me funcione por como estan las tablas...
 }

@@ -1,85 +1,110 @@
-\connect TDB;
+-- 1. Crear la base de datos
 
-CREATE TABLE cliente (
+CREATE DATABASE "lab1_grupo1"
+    WITH
+    OWNER = postgres
+    ENCODING = 'UTF8'
+    LC_COLLATE = 'Spanish_Chile.1252'
+    LC_CTYPE = 'Spanish_Chile.1252'
+    LOCALE_PROVIDER = 'libc'
+    TABLESPACE = pg_default
+    CONNECTION LIMIT = -1
+    IS_TEMPLATE = False
+    TEMPLATE = template0;
+
+-- 2. Conectarse a la base de datos
+\connect lab1_grupo1
+
+-- 3. Crear las tablas
+
+-- Tabla: Cliente
+CREATE TABLE Cliente (
     id_cliente SERIAL PRIMARY KEY,
-    nombre_cliente VARCHAR(100) NOT NULL,
-    contrasena_cliente VARCHAR(100) NOT NULL,
-    correo_cliente VARCHAR(100) UNIQUE NOT NULL,
-    direccion TEXT NOT NULL,
-    telefono VARCHAR(20),
-    fecha_registro DATE DEFAULT CURRENT_DATE
+    nombre_cliente VARCHAR(100),
+    contrasena_cliente VARCHAR(100),
+    correo_cliente VARCHAR(100),
+    direccion VARCHAR(100),
+    telefono VARCHAR(15),
+    fecha_registro DATE
 );
 
-CREATE TABLE repartidor (
-    id_repartidor SERIAL PRIMARY KEY,
-    nombre_repartidor VARCHAR(100) NOT NULL,
-    rut VARCHAR(20) UNIQUE NOT NULL,
-    telefono VARCHAR(20),
-    fecha_contratacion DATE,
-    activo BOOLEAN DEFAULT TRUE,
-    cantidad_entregas INT DEFAULT 0,
-    puntuacion INT DEFAULT 0
-);
-
-CREATE TABLE empresa_asociada (
+-- Tabla: Empresas_Asociadas
+CREATE TABLE Empresas_Asociadas (
     id_empresa SERIAL PRIMARY KEY,
-    nombre_empresa VARCHAR(100) NOT NULL,
-    rut_empresa VARCHAR(20) UNIQUE NOT NULL,
+    nombre_empresa VARCHAR(100),
+    rut_empresa VARCHAR(20),
     correo_contacto VARCHAR(100),
-    direccion TEXT
+    direccion VARCHAR(100)
 );
-CREATE TABLE producto_servicio (
+
+-- Tabla: Repartidores
+CREATE TABLE Repartidores (
+    id_repartidor SERIAL PRIMARY KEY,
+    nombre_repartidor VARCHAR(100),
+    rut VARCHAR(20),
+    telefono VARCHAR(15),
+    fecha_contratacion DATE,
+    activo BOOLEAN,
+    cantidad_entregas INT
+);
+
+-- Tabla: Medios_de_pago
+CREATE TABLE Medios_de_pago (
+    id_pago SERIAL PRIMARY KEY,
+    metodo_pago VARCHAR(100),
+    fecha_pago DATE,
+    monto_total INT
+);
+
+-- Tabla: Pedido
+CREATE TABLE Pedido (
+    id_pedido SERIAL PRIMARY KEY,
+    id_cliente INT REFERENCES Cliente(id_cliente),
+    id_empresa INT REFERENCES Empresas_Asociadas(id_empresa),
+    id_repartidor INT REFERENCES Repartidores(id_repartidor),
+    id_pago INT REFERENCES Medios_de_pago(id_pago),
+    fecha_pedido DATE,
+    fecha_entrega DATE NULL,  -- Aquí se permite que fecha_entrega sea NULL
+    estado VARCHAR(100),
+    urgente BOOLEAN
+);
+
+-- Tabla: ProductoServicio
+CREATE TABLE ProductoServicio (
     id_producto SERIAL PRIMARY KEY,
-    nombre_producto VARCHAR(100) NOT NULL,
+    nombre_producto VARCHAR(255),
     descripcion TEXT,
     categoria VARCHAR(50),
-    precio_unitario NUMERIC(10,2) NOT NULL,
-    stock INT DEFAULT 0
+    precio_unitario DECIMAL(10,2),
+    stock INT
 );
 
-CREATE TABLE pedido (
-    id_pedido SERIAL PRIMARY KEY,
-    id_cliente INT REFERENCES cliente(id_cliente),
-    id_empresa INT REFERENCES empresa_asociada(id_empresa),
-    id_repartidor INT REFERENCES repartidor(id_repartidor),
-    fecha_pedido DATE DEFAULT CURRENT_DATE,
-    fecha_entrega DATE,
-    estado VARCHAR(30) DEFAULT 'pendiente',
-    urgente BOOLEAN DEFAULT FALSE
-);
-
-CREATE TABLE detalle_pedido (
+-- Tabla: Detalle_de_pedido
+CREATE TABLE Detalle_de_pedido (
     id_detalle SERIAL PRIMARY KEY,
-    id_pedido INT REFERENCES pedido(id_pedido) ON DELETE CASCADE,
-    id_producto INT REFERENCES producto_servicio(id_producto),
-    cantidad INT NOT NULL CHECK (cantidad > 0),
-    subtotal NUMERIC(10,2) NOT NULL
+    id_producto INT REFERENCES ProductoServicio(id_producto),
+    id_pedido INT REFERENCES Pedido(id_pedido),
+    cantidad INT,
+    subtotal DECIMAL(10,2)
 );
 
-CREATE TABLE medio_pago (
-    id_pago SERIAL PRIMARY KEY,
-    id_pedido INT REFERENCES pedido(id_pedido) UNIQUE,
-    metodo_pago VARCHAR(30) NOT NULL,
-    fecha_pago DATE DEFAULT CURRENT_DATE,
-    monto_total NUMERIC(10,2) NOT NULL
-);
-
-CREATE TABLE calificacion (
-    id_calificacion SERIAL PRIMARY KEY,
-    id_pedido INT REFERENCES pedido(id_pedido) ON DELETE SET NULL,
-    id_cliente INT REFERENCES cliente(id_cliente),
-    id_repartidor INT REFERENCES repartidor(id_repartidor),
-    valor INT CHECK (valor BETWEEN 1 AND 5),
-    comentario TEXT,
-    fecha_calificacion DATE DEFAULT CURRENT_DATE
-);
-
-CREATE TABLE notificacion (
+-- Tabla: Notificacion
+CREATE TABLE Notificacion (
     id_notificacion SERIAL PRIMARY KEY,
-    id_pedido INT REFERENCES pedido(id_pedido),
-    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    mensaje TEXT NOT NULL,
+    id_pedido INT REFERENCES Pedido(id_pedido),
+    fecha_creacion DATE,
+    mensaje VARCHAR(100),
     tipo VARCHAR(50),
-    leida BOOLEAN DEFAULT FALSE,
-    descripcion TEXT
+    leida BOOLEAN,
+    descripcion VARCHAR(200)
 );
+
+-- Tabla: Calificaciones
+CREATE TABLE Calificaciones (
+    id_calificacion SERIAL PRIMARY KEY,
+    id_repartidor INT REFERENCES Repartidores(id_repartidor),
+    puntuacion INT,
+    comentario VARCHAR(100),
+    fecha_calificacion DATE
+);
+

@@ -108,3 +108,77 @@ CREATE TABLE Calificaciones (
     fecha_calificacion DATE
 );
 
+
+-- Procedimiento almacenado: Registrar un pedido completo
+CREATE OR REPLACE FUNCTION registrar_pedido_completo(
+    p_id_cliente INT,
+    p_id_empresa INT,
+    p_id_repartidor INT,
+    p_fecha_pedido DATE,
+    p_fecha_entrega DATE,
+    p_estado VARCHAR,
+    p_urgente BOOLEAN,
+    p_metodo_pago VARCHAR,
+    p_productos INT[],         -- Array de IDs de producto
+    p_cantidades INT[]         -- Array de cantidades correspondientes
+)
+RETURNS VOID AS $$
+DECLARE
+    i INT;
+    v_id_pago INT;
+    v_id_pedido INT;
+    v_id_producto INT;
+    v_cantidad INT;
+    v_precio DECIMAL(10,2);
+    v_subtotal DECIMAL(10,2);
+    v_total DECIMAL(10,2) := 0;
+BEGIN
+    -- Calcular total del pedido recorriendo productos
+    FOR i IN 1..array_length(p_productos, 1) LOOP
+        v_id_producto := p_productos[i];
+        v_cantidad := p_cantidades[i];
+
+        SELECT precio_unitario INTO v_precio
+        FROM ProductoServicio
+        WHERE id_producto = v_id_producto;
+
+        v_subtotal := v_precio * v_cantidad;
+        v_total := v_total + v_subtotal;
+    END LOOP;
+
+    -- Insertar en medios de pago
+    INSERT INTO Medios_de_pago (metodo_pago, fecha_pago, monto_total)
+    VALUES (p_metodo_pago, CURRENT_DATE, v_total)
+    RETURNING id_pago INTO v_id_pago;
+
+    -- Insertar el pedido
+    INSERT INTO Pedido (
+        id_cliente, id_empresa, id_repartidor, id_pago,
+        fecha_pedido, fecha_entrega, estado, urgente
+    )
+    VALUES (
+        p_id_cliente, p_id_empresa, p_id_repartidor, v_id_pago,
+        p_fecha_pedido, p_fecha_entrega, p_estado, p_urgente
+    )
+    RETURNING id_pedido INTO v_id_pedido;
+
+    -- Insertar detalles de pedido
+    FOR i IN 1..array_length(p_productos, 1) LOOP
+        v_id_producto := p_productos[i];
+        v_cantidad := p_cantidades[i];
+
+        SELECT precio_unitario INTO v_precio
+        FROM ProductoServicio
+        WHERE id_producto = v_id_producto;
+
+        v_subtotal := v_precio * v_cantidad;
+
+        INSERT INTO Detalle_de_pedido (
+            id_producto, id_pedido, cantidad, subtotal
+        )
+        VALUES (
+            v_id_producto, v_id_pedido, v_cantidad, v_subtotal
+        );
+    END LOOP;
+END;
+$$ LANGUAGE plpgsql;

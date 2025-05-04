@@ -182,3 +182,51 @@ BEGIN
     END LOOP;
 END;
 $$ LANGUAGE plpgsql;
+
+
+-- Procedimiento almacenado: Descontar stock al confirmar pedido (si aplica)
+CREATE OR REPLACE FUNCTION confirmar_pedido_y_descontar_stock(p_id_pedido INT)
+RETURNS VOID AS $$
+DECLARE
+    r RECORD;
+    v_stock_actual INT;
+BEGIN
+    -- Verificamos que el pedido esté pendiente (opcional)
+    IF EXISTS (
+        SELECT 1 FROM Pedido WHERE id_pedido = p_id_pedido AND estado != 'Pendiente'
+    ) THEN
+        RAISE EXCEPTION 'El pedido ya fue confirmado o no está en estado Pendiente.';
+    END IF;
+
+    -- Recorremos los productos del pedido
+    FOR r IN
+        SELECT dp.id_producto, dp.cantidad, ps.stock
+        FROM Detalle_de_pedido dp
+        JOIN ProductoServicio ps ON dp.id_producto = ps.id_producto
+        WHERE dp.id_pedido = p_id_pedido
+    LOOP
+        -- Verificamos si hay suficiente stock
+        IF r.stock < r.cantidad THEN
+            RAISE EXCEPTION 'No hay suficiente stock para el producto ID % (stock disponible: %, requerido: %)',
+                r.id_producto, r.stock, r.cantidad;
+        END IF;
+    END LOOP;
+
+    -- Si todo está bien, descontamos stock
+    FOR r IN
+        SELECT dp.id_producto, dp.cantidad
+        FROM Detalle_de_pedido dp
+        WHERE dp.id_pedido = p_id_pedido
+    LOOP
+        UPDATE ProductoServicio
+        SET stock = stock - r.cantidad
+        WHERE id_producto = r.id_producto;
+    END LOOP;
+
+    -- Cambiamos el estado del pedido a Confirmado
+    UPDATE Pedido
+    SET estado = 'Confirmado'
+    WHERE id_pedido = p_id_pedido;
+END;
+$$ LANGUAGE plpgsql;
+

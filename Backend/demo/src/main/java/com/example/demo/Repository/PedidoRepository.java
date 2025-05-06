@@ -13,5 +13,6 @@ public interface PedidoRepository {
     public void delete(Integer id);
     public Pedido getById(Integer id);
     public void registrarPedidoCompleto(PedidoCompletoDTO pedidoCompletoDTO);
+    void confirmarPedidoYDescontarStock(int id);
 
 }

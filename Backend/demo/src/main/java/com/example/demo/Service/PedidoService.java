@@ -38,4 +38,8 @@ public class PedidoService {
     public void registrarPedido(PedidoCompletoDTO pedido) {
         pedidoRepository.registrarPedidoCompleto(pedido);
     }
+
+    public void confirmarPedidoYDescontarStock(int id){
+        pedidoRepository.confirmarPedidoYDescontarStock(id);
+    }
 }

@@ -58,4 +58,17 @@ public class PedidoController {
             return ResponseEntity.status(500).body("Error al registrar pedido: " + e.getMessage());
         }
     }
+
+    @PutMapping("/confirmarPedidoYDescontarStock/{id}")
+    public ResponseEntity<String> confirmarPedido(@PathVariable("id") int id) {
+        try {
+            // Llamamos al servicio para confirmar el pedido y descontar el stock
+            pedidoService.confirmarPedidoYDescontarStock(id);
+            return ResponseEntity.ok("Pedido confirmado y stock descontado correctamente.");
+        } catch (Exception e) {
+            // Si ocurre un error, devolvemos un mensaje de error
+            return ResponseEntity.status(500).body("Error al confirmar el pedido: " + e.getMessage());
+        }
+    }
+
 }

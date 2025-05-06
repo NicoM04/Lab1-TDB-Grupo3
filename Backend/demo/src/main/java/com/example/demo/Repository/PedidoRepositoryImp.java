@@ -97,7 +97,7 @@ public class PedidoRepositoryImp implements PedidoRepository {
             Array productosArray = jdbcConn.createArrayOf("INTEGER", dto.getProductos());
             Array cantidadesArray = jdbcConn.createArrayOf("INTEGER", dto.getCantidades());
 
-            conn.createQuery("SELECT registrar_pedido_completo(:idCliente, :idEmpresa, :idRepartidor, :fechaPedido, :fechaEntrega, :estado, :urgente, :metodoPago, :productos, :cantidades)")
+            conn.createQuery("CALL registrar_pedido_completo(:idCliente, :idEmpresa, :idRepartidor, :fechaPedido, :fechaEntrega, :estado, :urgente, :metodoPago, :productos, :cantidades)")
                     .addParameter("idCliente", dto.getIdCliente())
                     .addParameter("idEmpresa", dto.getIdEmpresa())
                     .addParameter("idRepartidor", dto.getIdRepartidor())
@@ -108,9 +108,19 @@ public class PedidoRepositoryImp implements PedidoRepository {
                     .addParameter("metodoPago", dto.getMetodoPago())
                     .addParameter("productos", productosArray)
                     .addParameter("cantidades", cantidadesArray)
-                    .executeScalar(); // o executeUpdate() si no devuelve nada
+                    .executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error al registrar pedido completo", e);
+        }
+    }
+
+    public void confirmarPedidoYDescontarStock(int idPedido) {
+        try (Connection conn = sql2o.open()) {
+            conn.createQuery("CALL confirmar_pedido_y_descontar_stock(:idPedido)")
+                    .addParameter("idPedido", idPedido)
+                    .executeUpdate(); // correcto para funciones/procedimientos VOID
+        } catch (Exception e) {
+            throw new RuntimeException("Error al confirmar el pedido y descontar stock", e);
         }
     }
 

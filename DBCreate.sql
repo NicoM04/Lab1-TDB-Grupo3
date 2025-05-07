@@ -229,3 +229,67 @@ BEGIN
     WHERE id_pedido = p_id_pedido;
 END;
 $$ LANGUAGE plpgsql;
+
+
+-- Procedimiento almacenado: Cambiar el estado de un pedido con validación.
+
+CREATE OR REPLACE PROCEDURE cambiar_estado_pedido(
+    p_id_pedido INT,
+    p_nuevo_estado VARCHAR
+)
+AS $$
+DECLARE
+    v_estado_actual VARCHAR;
+    v_id_cliente INT;
+    v_id_empresa INT;
+    v_mensaje VARCHAR(100);
+BEGIN
+    -- Obtener estado actual y cliente asociado
+    SELECT estado, id_cliente, id_empresa
+    INTO v_estado_actual, v_id_cliente, v_id_empresa
+    FROM Pedido
+    WHERE id_pedido = p_id_pedido;
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'No existe un pedido con el ID %.', p_id_pedido;
+    END IF;
+
+    -- Validar que el nuevo estado no sea el mismo
+    IF v_estado_actual = p_nuevo_estado THEN
+        RAISE EXCEPTION 'El pedido ya está en estado "%".', p_nuevo_estado;
+    END IF;
+
+    -- Validar transición permitida
+    IF v_estado_actual = 'Pendiente' AND p_nuevo_estado IN ('Confirmado', 'Cancelado') THEN
+        NULL;
+    ELSIF v_estado_actual = 'Confirmado' AND p_nuevo_estado = 'En reparto' THEN
+        NULL;
+    ELSIF v_estado_actual = 'En reparto' AND p_nuevo_estado = 'Entregado' THEN
+        NULL;
+    ELSIF v_estado_actual = 'Entregado' AND p_nuevo_estado = 'Finalizado' THEN
+        NULL;
+    ELSE
+        RAISE EXCEPTION 'Transición inválida de estado: "%" → "%".', v_estado_actual, p_nuevo_estado;
+    END IF;
+
+    -- Actualizar estado del pedido
+    UPDATE Pedido
+    SET estado = p_nuevo_estado
+    WHERE id_pedido = p_id_pedido;
+
+    -- Crear mensaje de notificación
+    v_mensaje := FORMAT('El estado de tu pedido #%s ha cambiado a "%s".', p_id_pedido, p_nuevo_estado);
+
+    -- Insertar notificación
+    INSERT INTO Notificacion (
+        id_pedido, fecha_creacion, mensaje, tipo, leida, descripcion
+    ) VALUES (
+        p_id_pedido,
+        CURRENT_DATE,
+        v_mensaje,
+        'Estado pedido',
+        FALSE,
+        FORMAT('Tu pedido ha pasado de "%s" a "%s".', v_estado_actual, p_nuevo_estado)
+    );
+END;
+$$ LANGUAGE plpgsql;

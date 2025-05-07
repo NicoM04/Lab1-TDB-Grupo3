@@ -110,7 +110,7 @@ CREATE TABLE Calificaciones (
 
 
 -- Procedimiento almacenado: Registrar un pedido completo
-CREATE OR REPLACE FUNCTION registrar_pedido_completo(
+CREATE OR REPLACE PROCEDURE registrar_pedido_completo(
     p_id_cliente INT,
     p_id_empresa INT,
     p_id_repartidor INT,
@@ -122,7 +122,7 @@ CREATE OR REPLACE FUNCTION registrar_pedido_completo(
     p_productos INT[],         -- Array de IDs de producto
     p_cantidades INT[]         -- Array de cantidades correspondientes
 )
-RETURNS VOID AS $$
+LANGUAGE plpgsql AS $$
 DECLARE
     i INT;
     v_id_pago INT;
@@ -181,12 +181,12 @@ BEGIN
         );
     END LOOP;
 END;
-$$ LANGUAGE plpgsql;
+$$;
 
 
 -- Procedimiento almacenado: Descontar stock al confirmar pedido (si aplica)
-CREATE OR REPLACE FUNCTION confirmar_pedido_y_descontar_stock(p_id_pedido INT)
-RETURNS VOID AS $$
+CREATE OR REPLACE PROCEDURE confirmar_pedido_y_descontar_stock(p_id_pedido INT)
+AS $$ 
 DECLARE
     r RECORD;
     v_stock_actual INT;
@@ -229,4 +229,3 @@ BEGIN
     WHERE id_pedido = p_id_pedido;
 END;
 $$ LANGUAGE plpgsql;
-

@@ -4,6 +4,7 @@ import com.example.demo.Entity.Cliente;
 import com.example.demo.config.InputVerificationService;
 import com.example.demo.config.JwtMiddlewareService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ public class ClienteRepositoryImp implements ClienteRepository {
 
     @Autowired
     private JwtMiddlewareService jwtMiddlewareService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public ResponseEntity<Object> crear(Cliente cliente) {
@@ -41,6 +45,8 @@ public class ClienteRepositoryImp implements ClienteRepository {
                 return ResponseEntity.status(409).body("Ya existe un usuario con el mismo nombre o correo.");
             }
 
+            String hashedPassword = passwordEncoder.encode(cliente.getContrasena_cliente());
+
             // Inserción del nuevo cliente
             String insertQuery = "INSERT INTO Cliente (nombre_cliente, contrasena_cliente, correo_cliente, direccion, telefono, fecha_registro) " +
                     "VALUES (:nombre_cliente, :contrasena_cliente, :correo_cliente, :direccion, :telefono, :fecha_registro)";
@@ -48,7 +54,7 @@ public class ClienteRepositoryImp implements ClienteRepository {
             // Se insertan los datos del cliente
             con.createQuery(insertQuery)
                     .addParameter("nombre_cliente", cliente.getNombre_cliente())
-                    .addParameter("contrasena_cliente", cliente.getContrasena_cliente())
+                    .addParameter("contrasena_cliente", hashedPassword)
                     .addParameter("correo_cliente", cliente.getCorreo_cliente())
                     .addParameter("direccion", cliente.getDireccion())
                     .addParameter("telefono", cliente.getTelefono())
@@ -100,35 +106,29 @@ public class ClienteRepositoryImp implements ClienteRepository {
 
     @Override
     public ResponseEntity<Object> loginUser(String correo_cliente, String contrasena_cliente) {
-        // Verificación de entrada (validación de caracteres)
         if (!InputVerificationService.validateInput(correo_cliente) || !InputVerificationService.validateInput(contrasena_cliente)) {
             return ResponseEntity.badRequest().body("Error al iniciar sesión: caracteres no permitidos.");
         }
 
         try {
-            // Llamar al metodo findByCorreo para obtener al cliente desde la base de datos
-            ResponseEntity<Cliente> response = findByCorreo(correo_cliente); // Obtener el ResponseEntity con el cliente
-            Cliente cliente = response.getBody(); // Obtener el cliente de la respuesta
+            ResponseEntity<Cliente> response = findByCorreo(correo_cliente);
+            Cliente cliente = response.getBody();
 
-            // Si el cliente no existe, devolver un mensaje de error
             if (cliente == null) {
                 return ResponseEntity.status(401).body("Usuario no encontrado.");
             }
 
-            // Verificar si las contraseñas coinciden
-            if (cliente.getContrasena_cliente().equals(contrasena_cliente)) {
-                // Si las contraseñas coinciden, generar el token JWT
+            if (passwordEncoder.matches(contrasena_cliente, cliente.getContrasena_cliente())) {
                 String token = jwtMiddlewareService.generateToken(cliente);
-                return ResponseEntity.ok(token);  // Devolver el token como respuesta
+                return ResponseEntity.ok(token);
             } else {
-                // Si la contraseña es incorrecta
                 return ResponseEntity.status(401).body("Contraseña incorrecta.");
             }
         } catch (Exception e) {
-            // Manejo de excepciones
             return ResponseEntity.status(500).body("Error al iniciar sesión: " + e.getMessage());
         }
     }
+
 
 
     @Override

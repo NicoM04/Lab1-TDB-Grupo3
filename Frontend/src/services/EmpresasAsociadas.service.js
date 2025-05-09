@@ -1,4 +1,4 @@
-import httpClient from './http-common';
+import httpClient from "@/http-common";
 
 // Crear una nueva empresa
 const createEmpresa = (empresa, token) => {

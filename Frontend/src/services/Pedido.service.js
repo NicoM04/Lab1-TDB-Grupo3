@@ -1,4 +1,4 @@
-import httpClient from './http-common';
+import httpClient from "@/http-common";
 
 // Crear un nuevo pedido
 const createPedido = (pedido, token) => {
@@ -72,6 +72,14 @@ const cambiarEstadoPedido = (id, nuevoEstado, token) => {
   });
 };
 
+const obtenerPedidosCliente = (idCliente, token) => {
+  return httpClient.get(`/pedido/cliente/${idCliente}`, {
+    headers: {
+      Authorization: `Bearer ${token}`, // Usamos el token para la autenticación
+    },
+  });
+};
+
 export default {
   createPedido,
   getAllPedidos,
@@ -81,4 +89,5 @@ export default {
   registrarPedido,
   confirmarPedidoYDescontarStock,
   cambiarEstadoPedido,
+  obtenerPedidosCliente,
 };

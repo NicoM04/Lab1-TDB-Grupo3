@@ -1,4 +1,4 @@
-import httpClient from './http-common';
+import httpClient from "@/http-common";
 
 // Crear un nuevo medio de pago
 const createMedioDePago = (medioDePago, token) => {
@@ -48,7 +48,7 @@ const deleteMedioDePago = (id, token) => {
 // Obtener el medio de pago más utilizado en pedidos urgentes
 const getMedioDePagoMasUtilizadoUrgentes = (token) => {
   return httpClient.get('/mediosdepago/masutilizadourgentes', {
-    headers: {
+    headers: {  
       Authorization: `Bearer ${token}`,
     },
   });

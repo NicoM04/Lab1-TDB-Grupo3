@@ -1,4 +1,4 @@
-import httpClient from './http-common';
+import httpClient from "@/http-common";
 
 // Crear un nuevo producto o servicio
 const createProducto = (producto, token) => {

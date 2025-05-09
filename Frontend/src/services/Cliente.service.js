@@ -1,4 +1,4 @@
-import httpClient from './http-common';
+import httpClient from "@/http-common";
 
 // Registrar un nuevo cliente
 const registerCliente = (cliente, token) => {

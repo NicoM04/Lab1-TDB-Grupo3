@@ -1,4 +1,4 @@
-import httpClient from './http-common';
+import httpClient from "@/http-common";
 
 // Crear un nuevo detalle de pedido
 const createDetalle = (detalle, token) => {

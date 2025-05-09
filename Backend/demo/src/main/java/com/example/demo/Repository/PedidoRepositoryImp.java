@@ -186,4 +186,17 @@ public class PedidoRepositoryImp implements PedidoRepository {
     }
 
 
+    // Método para obtener los pedidos por id_cliente
+    @Override
+    public List<Pedido> getPedidosByCliente(Integer idCliente) {
+        String sql = "SELECT * FROM Pedido WHERE id_cliente = :id_cliente"; // Query para obtener pedidos por id_cliente
+        try (var con = sql2o.open()) {
+            return con.createQuery(sql)
+                    .addParameter("id_cliente", idCliente) // Agregar el parámetro del id_cliente
+                    .executeAndFetch(Pedido.class); // Ejecutar la consulta y mapear a la entidad Pedido
+        }
+    }
+
+
+
 }

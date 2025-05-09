@@ -89,5 +89,14 @@ public class PedidoController {
         pedidoService.cambiarEstadoPedido(id, dto.getNuevoEstado());
     }
 
+    @GetMapping("/cliente/{idCliente}")
+    public ResponseEntity<List<Pedido>> obtenerPedidosPorCliente(@PathVariable Integer idCliente) {
+        List<Pedido> pedidos = pedidoService.obtenerPedidosPorCliente(idCliente);
+        if (pedidos.isEmpty()) {
+            return ResponseEntity.status(404).body(null); // No hay pedidos para este cliente
+        }
+        return ResponseEntity.ok(pedidos); // Devolver los pedidos encontrados
+    }
+
 
 }

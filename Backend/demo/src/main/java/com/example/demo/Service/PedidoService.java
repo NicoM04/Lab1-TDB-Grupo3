@@ -53,4 +53,9 @@ public class PedidoService {
     public void cambiarEstadoPedido(int id, String nuevoEstado){
         pedidoRepository.cambiarEstadoPedido(id, nuevoEstado);
     }
+
+    // Método para obtener los pedidos de un cliente
+    public List<Pedido> obtenerPedidosPorCliente(Integer idCliente) {
+        return pedidoRepository.getPedidosByCliente(idCliente);
+    }
 }

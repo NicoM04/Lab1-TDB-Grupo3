@@ -13,6 +13,8 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/repartidor")
+@CrossOrigin("*")
+
 public class RepartidorController {
 
     @Autowired

@@ -15,7 +15,7 @@ public class CalificacionRepositoryImp implements CalificacionRepository {
 
     @Override
     public Calificacion crear(Calificacion calificacion) {
-        String sql = "INSERT INTO calificacion (id_repartidor, comentario, fecha_calificacion) " +
+        String sql = "INSERT INTO calificaciones (id_repartidor, comentario, fecha_calificacion) " +
                 "VALUES (:id_repartidor, :comentario, :fecha_calificacion)";
         try (var con = sql2o.open()) {
             int id = (int) con.createQuery(sql, true)
@@ -31,7 +31,7 @@ public class CalificacionRepositoryImp implements CalificacionRepository {
 
     @Override
     public List<Calificacion> getAll() {
-        String sql = "SELECT id_calificacion, id_repartidor, valor AS puntuacion, comentario, fecha_calificacion FROM calificacion";
+        String sql = "SELECT id_calificacion, id_repartidor, valor AS puntuacion, comentario, fecha_calificacion FROM calificaciones";
         try (var con = sql2o.open()) {
             return con.createQuery(sql)
                     .executeAndFetch(Calificacion.class);
@@ -40,7 +40,7 @@ public class CalificacionRepositoryImp implements CalificacionRepository {
 
     @Override
     public String update(Calificacion calificacion, Integer id) {
-        String sql = "UPDATE calificacion SET id_repartidor = :id_repartidor, " +
+        String sql = "UPDATE calificaciones SET id_repartidor = :id_repartidor, " +
                 "comentario = :comentario, fecha_calificacion = :fecha_calificacion " +
                 "WHERE id_calificacion = :id_calificacion";
         try (var con = sql2o.open()) {
@@ -58,7 +58,7 @@ public class CalificacionRepositoryImp implements CalificacionRepository {
 
     @Override
     public void delete(Integer id) {
-        String sql = "DELETE FROM calificacion WHERE id_calificacion = :id_calificacion";
+        String sql = "DELETE FROM calificaciones WHERE id_calificacion = :id_calificacion";
         try (var con = sql2o.open()) {
             con.createQuery(sql)
                     .addParameter("id_calificacion", id)
@@ -68,7 +68,7 @@ public class CalificacionRepositoryImp implements CalificacionRepository {
 
     @Override
     public Calificacion findById(Integer id) {
-        String sql = "SELECT * FROM calificacion WHERE id_calificacion = :id_calificacion";
+        String sql = "SELECT * FROM calificaciones WHERE id_calificacion = :id_calificacion";
         try (var con = sql2o.open()) {
             return con.createQuery(sql)
                     .addParameter("id_calificacion", id)

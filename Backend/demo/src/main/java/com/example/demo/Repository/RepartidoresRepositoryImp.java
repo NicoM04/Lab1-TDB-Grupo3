@@ -37,7 +37,7 @@ public class RepartidoresRepositoryImp implements RepartidoresRepository {
 
     @Override
     public List<Repartidor> getAll() {
-        String sql = "SELECT * FROM repartidor";
+        String sql = "SELECT * FROM repartidores";
         try (var con = sql2o.open()) {
             return con.createQuery(sql)
                     .executeAndFetch(Repartidor.class);
@@ -46,7 +46,7 @@ public class RepartidoresRepositoryImp implements RepartidoresRepository {
 
     @Override
     public Repartidor findById(Integer id) {
-        String sql = "SELECT * FROM repartidor WHERE id_repartidor = :id_repartidor";
+        String sql = "SELECT * FROM repartidores WHERE id_repartidor = :id_repartidor";
         try (var con = sql2o.open()) {
             return con.createQuery(sql)
                     .addParameter("id_repartidor", id)

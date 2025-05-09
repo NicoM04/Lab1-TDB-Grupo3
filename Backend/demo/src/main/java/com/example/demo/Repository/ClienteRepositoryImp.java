@@ -106,6 +106,7 @@ public class ClienteRepositoryImp implements ClienteRepository {
 
     @Override
     public ResponseEntity<Object> loginUser(String correo_cliente, String contrasena_cliente) {
+
         if (!InputVerificationService.validateInput(correo_cliente) || !InputVerificationService.validateInput(contrasena_cliente)) {
             return ResponseEntity.badRequest().body("Error al iniciar sesión: caracteres no permitidos.");
         }
@@ -113,6 +114,7 @@ public class ClienteRepositoryImp implements ClienteRepository {
         try {
             ResponseEntity<Cliente> response = findByCorreo(correo_cliente);
             Cliente cliente = response.getBody();
+            System.out.println("Contraseña encriptada: " + cliente.getContrasena_cliente());
 
             if (cliente == null) {
                 return ResponseEntity.status(401).body("Usuario no encontrado.");
@@ -120,6 +122,7 @@ public class ClienteRepositoryImp implements ClienteRepository {
 
             if (passwordEncoder.matches(contrasena_cliente, cliente.getContrasena_cliente())) {
                 String token = jwtMiddlewareService.generateToken(cliente);
+                System.out.println("Token generado: " + token);
                 return ResponseEntity.ok(token);
             } else {
                 return ResponseEntity.status(401).body("Contraseña incorrecta.");

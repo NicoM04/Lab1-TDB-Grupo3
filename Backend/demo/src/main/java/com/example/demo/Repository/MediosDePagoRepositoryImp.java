@@ -17,7 +17,7 @@ public class MediosDePagoRepositoryImp implements MediosDePagoRepository {
 
     @Override
     public MedioDePago crear(MedioDePago medioDePago) {
-        String sql = "INSERT INTO medio_pago (metodo_pago, fecha_pago, monto_total) " +
+        String sql = "INSERT INTO medios_de_pago (metodo_pago, fecha_pago, monto_total) " +
                 "VALUES (:metodo_pago, :fecha_pago, :monto_total)";
         try (var con = sql2o.open()) {
             int id = (int) con.createQuery(sql, true)
@@ -33,7 +33,7 @@ public class MediosDePagoRepositoryImp implements MediosDePagoRepository {
 
     @Override
     public List<MedioDePago> getAll() {
-        String sql = "SELECT id_pago, metodo_pago, fecha_pago, monto_total FROM medio_pago";
+        String sql = "SELECT id_pago, metodo_pago, fecha_pago, monto_total FROM medios_de_pago";
         try (var con = sql2o.open()) {
             return con.createQuery(sql)
                     .executeAndFetch(MedioDePago.class);
@@ -42,7 +42,7 @@ public class MediosDePagoRepositoryImp implements MediosDePagoRepository {
 
     @Override
     public String update(MedioDePago medioDePago, Integer id) {
-        String sql = "UPDATE medio_pago SET metodo_pago = :metodo_pago, fecha_pago = :fecha_pago, " +
+        String sql = "UPDATE medios_de_pago SET metodo_pago = :metodo_pago, fecha_pago = :fecha_pago, " +
                 "monto_total = :monto_total WHERE id_pago = :id_pago";
         try (var con = sql2o.open()) {
             int result = con.createQuery(sql)
@@ -59,7 +59,7 @@ public class MediosDePagoRepositoryImp implements MediosDePagoRepository {
 
     @Override
     public void delete(Integer id) {
-        String sql = "DELETE FROM medio_pago WHERE id_pago = :id_pago";
+        String sql = "DELETE FROM medios_de_pago WHERE id_pago = :id_pago";
         try (var con = sql2o.open()) {
             con.createQuery(sql)
                     .addParameter("id_pago", id)
@@ -69,7 +69,7 @@ public class MediosDePagoRepositoryImp implements MediosDePagoRepository {
 
     @Override
     public MedioDePago findById(Integer id) {
-        String sql = "SELECT * FROM medio_pago WHERE id_pago = :id_pago";
+        String sql = "SELECT * FROM medios_de_pago WHERE id_pago = :id_pago";
         try (var con = sql2o.open()) {
             return con.createQuery(sql)
                     .addParameter("id_pago", id)
@@ -82,7 +82,7 @@ public class MediosDePagoRepositoryImp implements MediosDePagoRepository {
     public String obtenerMetodoPagoMasUsadoEnPedidosUrgentes() {
         String sql = """
             SELECT mp.metodo_pago
-            FROM medio_pago mp
+            FROM medios_de_pago mp
             JOIN pedido p ON mp.id_pago = p.id_pedido
             WHERE p.urgente = TRUE
             GROUP BY mp.metodo_pago

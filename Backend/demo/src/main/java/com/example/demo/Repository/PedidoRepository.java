@@ -20,4 +20,6 @@ public interface PedidoRepository {
     void confirmarPedidoYDescontarStock(int id);
     void cambiarEstadoPedido(int idPedido, String nuevoEstado);
 
+    List<Pedido> getPedidosByCliente(Integer idCliente);
+
 }

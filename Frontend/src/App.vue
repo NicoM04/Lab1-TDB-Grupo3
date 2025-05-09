@@ -1,10 +1,10 @@
 <script setup>
-import NavBar from './components/NavBar.vue';
+import Navbar from './components/Navbar.vue';
 </script>
 
 <template>
   <main>
-    <NavBar />
+    <Navbar /> 
     <div class="wrapper">
       <router-view />
     </div>
@@ -19,5 +19,7 @@ import NavBar from './components/NavBar.vue';
     flex-wrap: wrap;
     width: 100vw;
   }
+  
 }
 </style>
+

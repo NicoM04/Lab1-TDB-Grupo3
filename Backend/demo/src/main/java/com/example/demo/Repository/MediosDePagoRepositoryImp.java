@@ -77,6 +77,7 @@ public class MediosDePagoRepositoryImp implements MediosDePagoRepository {
         }
     }
 
+    //CONSULTA SQL COMPLEJA 6)
     @Override
     public String obtenerMetodoPagoMasUsadoEnPedidosUrgentes() {
         String sql = """

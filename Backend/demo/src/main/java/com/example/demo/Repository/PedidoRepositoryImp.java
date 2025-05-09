@@ -1,6 +1,7 @@
 package com.example.demo.Repository;
 
 import com.example.demo.DTO.PedidoCompletoDTO;
+import com.example.demo.DTO.ResumenPedidoDTO;
 import com.example.demo.Entity.Pedido;
 import com.example.demo.Repository.PedidoRepository;
 import org.sql2o.Connection;
@@ -90,6 +91,52 @@ public class PedidoRepositoryImp implements PedidoRepository {
         }
     }
 
+    @Override
+    public List<ResumenPedidoDTO> obtenerResumenPorCliente(Integer idCliente) {
+        String sqlPedidos = """
+        SELECT id_pedido, fecha_pedido, estado
+        FROM pedido
+        WHERE id_cliente = :idCliente
+    """;
+
+        String sqlProductos = """
+        SELECT p.nombre_producto AS nombreProducto, dp.cantidad, dp.subtotal
+        FROM detalle_de_pedido dp
+        JOIN ProductoServicio p ON dp.id_producto = p.id_producto
+        WHERE dp.id_pedido = :idPedido
+    """;
+
+
+        try (var con = sql2o.open()) {
+            var pedidos = con.createQuery(sqlPedidos)
+                    .addParameter("idCliente", idCliente)
+                    .executeAndFetchTable()
+                    .asList();
+
+            List<ResumenPedidoDTO> resumenes = new java.util.ArrayList<>();
+
+            for (var row : pedidos) {
+                Integer idPedido = (Integer) row.get("id_pedido");
+                String fecha = row.get("fecha_pedido").toString();
+                String estado = (String) row.get("estado");
+
+                var productos = con.createQuery(sqlProductos)
+                        .addParameter("idPedido", idPedido)
+                        .executeAndFetch(com.example.demo.DTO.ProductoCantidadDTO.class);
+
+                double total = productos.stream().mapToDouble(p -> p.getSubtotal()).sum();
+
+                resumenes.add(new ResumenPedidoDTO(idPedido, fecha, estado, total, productos));
+            }
+
+            return resumenes;
+        }
+    }
+
+
+    //--------------------------------------- PROCEDIMIENTOS ALMACENADOS ------------------------------------------
+
+    //PROCEDIMIENTO ALMACENADO 7)
     public void registrarPedidoCompleto(PedidoCompletoDTO dto) {
         try (Connection conn = sql2o.open()) {
             java.sql.Connection jdbcConn = conn.getJdbcConnection();
@@ -114,6 +161,20 @@ public class PedidoRepositoryImp implements PedidoRepository {
         }
     }
 
+    //PROCEDIMIENTO ALMACENADO 8)
+    @Override
+    public void cambiarEstadoPedido(int idPedido, String nuevoEstado) {
+        try (Connection conn = sql2o.open()) {
+            conn.createQuery("CALL cambiar_estado_pedido(:idPedido, :nuevoEstado)")
+                    .addParameter("idPedido", idPedido)
+                    .addParameter("nuevoEstado", nuevoEstado)
+                    .executeUpdate(); // correcto porque el procedimiento es VOID
+        } catch (Exception e) {
+            throw new RuntimeException("Error al cambiar el estado del pedido", e);
+        }
+    }
+
+    //PROCEDIMIENTO ALMACENADO 9)
     public void confirmarPedidoYDescontarStock(int idPedido) {
         try (Connection conn = sql2o.open()) {
             conn.createQuery("CALL confirmar_pedido_y_descontar_stock(:idPedido)")

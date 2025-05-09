@@ -84,6 +84,7 @@ public class RepartidoresRepositoryImp implements RepartidoresRepository {
         }
     }
 
+    //CONSULTA SQL COMPLEJA 4)
     @Override
     public List<Map<String, Object>> obtenerTiempoPromedioEntregaPorRepartidor() {
         try (var conn = sql2o.open()) {
@@ -104,6 +105,7 @@ public class RepartidoresRepositoryImp implements RepartidoresRepository {
         }
     }
 
+    //CONSULTA SQL COMPLEJA 5)
     @Override
     public List<Map<String, Object>> obtenerTop3RepartidoresConMejorRendimiento() {
         String sql = """

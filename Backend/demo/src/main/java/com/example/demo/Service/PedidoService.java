@@ -1,6 +1,7 @@
 package com.example.demo.Service;
 
 import com.example.demo.DTO.PedidoCompletoDTO;
+import com.example.demo.DTO.ResumenPedidoDTO;
 import com.example.demo.Entity.Pedido;
 import com.example.demo.Repository.PedidoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,11 +36,21 @@ public class PedidoService {
         pedidoRepository.delete(id);
     }
 
+    public List<ResumenPedidoDTO> obtenerResumenPorCliente(Integer idCliente){
+        return pedidoRepository.obtenerResumenPorCliente(idCliente);
+    }
+
+
+    //--------------- PROCEDIMIENTOS---------------
     public void registrarPedido(PedidoCompletoDTO pedido) {
         pedidoRepository.registrarPedidoCompleto(pedido);
     }
 
     public void confirmarPedidoYDescontarStock(int id){
         pedidoRepository.confirmarPedidoYDescontarStock(id);
+    }
+
+    public void cambiarEstadoPedido(int id, String nuevoEstado){
+        pedidoRepository.cambiarEstadoPedido(id, nuevoEstado);
     }
 }

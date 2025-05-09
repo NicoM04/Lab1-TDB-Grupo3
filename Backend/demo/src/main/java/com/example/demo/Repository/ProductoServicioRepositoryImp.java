@@ -77,6 +77,7 @@ public class ProductoServicioRepositoryImp implements ProductoServicioRepository
         }
     }
 
+    //CONSULTA COMPLEJA SQL 2)
     @Override
     public List<ProductoMasPedidoDTO> obtenerMasPedidosPorCategoriaUltimoMes() {
         String sql = """

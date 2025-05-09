@@ -16,4 +16,5 @@ public interface ClienteRepository {
     public ResponseEntity<Cliente> findByName(String name);
     public ResponseEntity<Object> loginUser(String correo_cliente, String contrasena_cliente);
 
+    Cliente getClienteMayorGasto();
 }

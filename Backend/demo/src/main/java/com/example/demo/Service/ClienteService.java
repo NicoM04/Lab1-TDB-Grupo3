@@ -39,7 +39,22 @@ public class ClienteService {
         clienteRepository.delete(id);
     }
 
+
+    // Buscar cliente por correo
+    public ResponseEntity<Cliente> buscarPorCorreo(String correo) {
+        return clienteRepository.findByCorreo(correo);
+    }
+
+    // Buscar cliente por nombre
+    public ResponseEntity<Cliente> buscarPorNombre(String nombre) {
+        return clienteRepository.findByName(nombre);
+    }
+
     public ResponseEntity<Object> loginUser(String email, String password) {
         return clienteRepository.loginUser(email, password);
+    }
+
+    public Cliente obtenerClienteMayorGasto() {
+        return clienteRepository.getClienteMayorGasto();
     }
 }

@@ -9,4 +9,6 @@ public interface EmpresasAsociadasRepository {
     public List<EmpresasAsociadas> getAll();
     public String update(EmpresasAsociadas empresa, Integer id);
     public void delete(Integer id);
+
+    List<EmpresasAsociadas> getEmpresasConMasFallos();
 }

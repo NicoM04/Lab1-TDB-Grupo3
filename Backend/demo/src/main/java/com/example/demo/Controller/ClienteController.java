@@ -39,6 +39,18 @@ public class ClienteController {
         return cliente != null ? ResponseEntity.ok(cliente) : ResponseEntity.notFound().build();
     }
 
+    // Buscar cliente por correo
+    @GetMapping("/buscar/correo")
+    public ResponseEntity<Cliente> buscarPorCorreo(@RequestParam String correo) {
+        return clienteService.buscarPorCorreo(correo);
+    }
+
+    // Buscar cliente por nombre
+    @GetMapping("/buscar/nombre")
+    public ResponseEntity<Cliente> buscarPorNombre(@RequestParam String nombre) {
+        return clienteService.buscarPorNombre(nombre);
+    }
+
     // Actualizar un cliente
     @PutMapping("/update/{id}")
     public ResponseEntity<String> actualizarCliente(@PathVariable Integer id, @RequestBody Cliente cliente) {
@@ -54,4 +66,10 @@ public class ClienteController {
         clienteService.eliminarCliente(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/mayor-gasto")
+    public Cliente clienteMayorGasto() {
+        return clienteService.obtenerClienteMayorGasto();
+    }
+
 }

@@ -189,4 +189,27 @@ public class ClienteRepositoryImp implements ClienteRepository {
         }
     }
 
+    @Override
+    public Cliente getClienteMayorGasto() {
+        try (var con = sql2o.open()) {
+            String sql = """
+            SELECT c.* 
+            FROM cliente c 
+            JOIN pedido p ON c.id_cliente = p.id_cliente 
+            JOIN medio_pago m ON p.id_pedido = m.id_pedido 
+            WHERE p.estado = 'entregado' 
+            GROUP BY c.id_cliente 
+            ORDER BY SUM(m.monto_total) DESC 
+            LIMIT 1
+            """;
+
+            return con.createQuery(sql)
+                    .executeAndFetchFirst(Cliente.class);
+        } catch (Exception e) {
+            System.out.println("Error al obtener cliente con mayor gasto: " + e.getMessage());
+            return null;
+        }
+    }
+
+
 }

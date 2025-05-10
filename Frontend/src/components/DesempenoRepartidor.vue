@@ -5,12 +5,17 @@
     <!-- Filtro de reparto -->
     <div class="filters">
       <label for="repartidor">Seleccionar Repartidor:</label>
-      <select v-model="repartidorSeleccionado" @change="filtrarDesempeno">
+      <select v-model="repartidorSeleccionado">
         <option value="">Todos</option>
-        <option v-for="repartidor in repartidores" :key="repartidor.id" :value="repartidor.id">
+        <option
+          v-for="repartidor in repartidores"
+          :key="repartidor.id_repartidor"
+          :value="repartidor.id_repartidor"
+        >
           {{ repartidor.nombre_repartidor }}
         </option>
       </select>
+      <button @click="filtrarDesempeno">Buscar</button>
     </div>
 
     <!-- Tabla de desempeño -->
@@ -90,13 +95,21 @@ export default {
     // Filtrar desempeño según repartidor seleccionado
     filtrarDesempeno() {
       if (this.repartidorSeleccionado) {
-        this.repartidoresDesempeno = this.repartidoresDesempeno.filter(
-          (repartidor) => repartidor.id_repartidor === parseInt(this.repartidorSeleccionado)
-        );
+        const idSeleccionado = parseInt(this.repartidorSeleccionado);
+        this.repartidoresDesempeno = this.repartidores.filter(
+          (repartidor) => repartidor.id_repartidor === idSeleccionado
+        ).map((repartidor) => {
+          const encontrado = this.repartidoresDesempeno.find(r => r.id_repartidor === idSeleccionado);
+          return {
+            ...repartidor,
+            puntuacion: encontrado ? encontrado.puntuacion : 'N/A',
+            cantidad_entregas: repartidor.cantidad_entregas
+          };
+        });
       } else {
-        this.obtenerDesempenoRepartidores(); // Si no hay filtro, muestra todos los repartidores
+        this.obtenerDesempenoRepartidores(); // Sin filtro
       }
-    },
+    }
   },
 };
 </script>
@@ -219,6 +232,19 @@ td {
   thead {
     display: none;
   }
+  .filters button {
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.filters button:hover {
+  background-color: #0056b3;
+}
 }
 
 </style>

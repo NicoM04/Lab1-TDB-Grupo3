@@ -38,7 +38,6 @@ export default {
     // Obtener productos y servicios desde la API
     async obtenerProductos() {
       const token = localStorage.getItem("jwt"); // Obtener el token de localStorage
-      console.log("Token recuperado:", token); // Imprimir el token en la consola
       try {
         const response = await ProductoServicioService.getAllProductos(token);
         // Asignar una imagen predeterminada si no existe la imagen en el producto

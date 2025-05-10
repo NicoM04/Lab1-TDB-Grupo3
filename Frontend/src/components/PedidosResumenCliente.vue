@@ -30,18 +30,14 @@
             <th>Fecha</th>
             <th>Estado</th>
             <th>Monto Total</th>
-            <th>Acción</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="pedido in pedidosFiltrados" :key="pedido.id_pedido">
-            <td>{{ pedido.id_pedido }}</td>
-            <td>{{ new Date(pedido.fecha_pedido).toLocaleDateString() }}</td>
-            <td>{{ pedido.estado }}</td>
-            <td>${{ pedido.montoTotal ? pedido.montoTotal.toFixed(2) : '0.00' }}</td>
-            <td>
-              <button @click="verDetalles(pedido.id_pedido)">Ver Detalles</button>
-            </td>
+            <td class="td">{{ pedido.id_pedido }}</td>
+            <td class="td">{{ new Date(pedido.fecha_pedido).toLocaleDateString() }}</td>
+            <td class="td">{{ pedido.estado }}</td>
+            <td class="td">${{ pedido.montoTotal ? pedido.montoTotal.toFixed(2) : '0.00' }}</td>
           </tr>
         </tbody>
       </table>
@@ -131,7 +127,6 @@ export default {
       this.montoTotal = this.pedidosFiltrados.reduce((total, pedido) => {
         return total + (pedido.montoTotal || 0); // Asegurarse de que montoTotal sea un número
       }, 0); // Si es undefined o null, se asigna 0 por defecto
-      console.log("Total monto:", this.montoTotal); // Verifica si el monto total se está calculando correctamente
     },
 
     // Ver detalles del pedido
@@ -158,6 +153,11 @@ h2 {
   margin-bottom: 30px;
   color: #333;
 }
+
+td {
+  color: #000000;
+}
+
 
 .filters {
   display: flex;

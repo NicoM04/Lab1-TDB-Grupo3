@@ -1,26 +1,5 @@
 <template> 
   <div class="empresas-fallidas-container">
-    <h2>Empresas con Entregas Fallidas y Mayor Volumen de Pedidos</h2>
-
-    <!-- Empresas con más entregas fallidas -->
-    <section class="fallidas">
-      <h3>Empresas con Más Entregas Fallidas</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Empresa</th>
-            <th>Entregas Fallidas</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="empresa in empresasFallidas" :key="empresa.id_empresa">
-            <td>{{ empresa.nombre_empresa }}</td>
-            <td>{{ empresa.entregasFallidas }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
-
     <!-- Empresas con mayor volumen de pedidos entregados -->
     <section class="mayor-volumen">
       <h3>Empresas con Mayor Volumen de Pedidos Entregados</h3>
@@ -34,9 +13,9 @@
         </thead>
         <tbody>
           <tr v-for="empresa in empresasMayorVolumen" :key="empresa.id_empresa">
-            <td>{{ empresa.nombre_empresa }}</td>
-            <td>{{ empresa.pedidosEntregados }}</td>
-            <td>${{ empresa.volumenTotal.toFixed(2) }}</td>
+            <td class="td">{{ empresa.nombre_empresa }}</td>
+            <td class="td">{{ empresa.pedidosEntregados }}</td>
+            <td class="td">${{ empresa.volumenTotal.toFixed(2) }}</td>
           </tr>
         </tbody>
       </table>
@@ -52,25 +31,13 @@ import MediosPagoService from "@/services/MediosPago.service"; // Importamos el 
 export default {
   data() {
     return {
-      empresasFallidas: [], // Empresas con más entregas fallidas
       empresasMayorVolumen: [], // Empresas con mayor volumen de pedidos entregados
     };
   },
   created() {
-    this.obtenerEmpresasFallidas();
     this.obtenerEmpresasMayorVolumen();
   },
   methods: {
-    // Obtener empresas con más entregas fallidas
-    async obtenerEmpresasFallidas() {
-      const token = localStorage.getItem("jwt"); // Obtener el token de localStorage
-      try {
-        const response = await EmpresaService.getEmpresasConMasFallos(token); // Llamamos al servicio para obtener las empresas con más fallos
-        this.empresasFallidas = response.data;
-      } catch (error) {
-        console.error("Error al obtener empresas con más entregas fallidas", error);
-      }
-    },
 
     // Obtener empresas con mayor volumen de pedidos entregados
     async obtenerEmpresasMayorVolumen() {
@@ -128,6 +95,10 @@ h2 {
   font-size: 1.8rem;
   text-align: center;
   color: #2c3e50;
+}
+
+td {
+  color: #000000;
 }
 
 section {

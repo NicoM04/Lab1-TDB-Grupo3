@@ -49,9 +49,6 @@ export default {
         // Llamada al método loginCliente del servicio ClienteService
         const response = await ClienteService.loginCliente(this.email, this.password);
 
-
-        // Imprimir el token antes de guardarlo
-        console.log("Token antes de guardarlo:", response.data);
         // Si el login es exitoso, guarda el token en el localStorage
         localStorage.setItem("jwt", response.data);
         
@@ -61,12 +58,6 @@ export default {
         // Guardamos el id_cliente en localStorage
         localStorage.setItem("id_cliente", clienteResponse.data.id_cliente);
 
-        // Imprimir el id_cliente guardado
-        console.log("id_cliente guardado:", clienteResponse.data.id_cliente);
-
-    
-        // Imprimir el token después de guardarlo en localStorage
-        console.log("Token guardado en localStorage:", localStorage.getItem("jwt"));
 
         // Redirige al dashboard o página principal
         this.$router.push({ name: "home" });

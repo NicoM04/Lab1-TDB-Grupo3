@@ -43,8 +43,27 @@ export default {
     },
     // Método para agregar el producto al carrito
     agregarAlCarrito(producto) {
-      // Aquí puedes agregar la lógica para agregar el producto al carrito
-      console.log("Producto agregado al carrito:", producto);
+      let carrito = JSON.parse(localStorage.getItem("carrito")) || []; // Obtener carrito del localStorage, si no existe, usar uno vacío
+
+      // Verificar si el producto ya está en el carrito
+      const productoExistente = carrito.find(
+        (item) => item.id_producto === producto.id_producto
+      );
+
+      if (productoExistente) {
+        productoExistente.cantidad += 1; // Si el producto ya está en el carrito, aumentamos la cantidad
+      } else {
+        producto.cantidad = 1; // Si el producto no está en el carrito, lo agregamos con cantidad 1
+        carrito.push(producto); // Agregar producto al carrito
+      }
+
+      // Guardar el carrito actualizado en el localStorage
+      localStorage.setItem("carrito", JSON.stringify(carrito));
+
+      // Mostrar un alert para notificar que el producto ha sido agregado al carrito
+      alert(`${producto.nombre_producto} ha sido agregado al carrito!`);
+
+      console.log("Producto agregado al carrito:", producto); // Solo para verificar
     },
   },
 };

@@ -10,7 +10,7 @@
       <router-link to="/cliente/pedidos-resumen" class="navbar-item">Resumen Pedidos</router-link>
       <router-link to="/repartidores/desempeno" class="navbar-item">Desempeño Repartidor</router-link>
       <router-link to="/empresas/mayorvolumen" class="navbar-item">Empresas Mayor Volumen</router-link>
-      <router-link to="/productos/mas-pedidos" class="navbar-item">Productos</router-link>
+      <router-link to="/carrito" class="navbar-item">Carrito</router-link>
       <button @click="logout" class="navbar-item logout-button">Cerrar sesión</button>
     </div>
   </nav>

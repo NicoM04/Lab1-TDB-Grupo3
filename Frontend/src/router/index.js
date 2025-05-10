@@ -8,7 +8,7 @@ import EmpresasMayorVolumen from '@/components/EmpresasMayorVolumen.vue';
 import Notificaciones from '@/components/Notificaciones.vue';
 import ProductoDetalle from '@/components/ProductoDetalle.vue';
 import ProductosMasPedidos from '@/components/ProductosMasPedidos.vue';
-
+import Carrito from '@/components/Carrito.vue';
 
 
 //Definir las rutas de la aplicacion
@@ -71,6 +71,12 @@ const routes = [
     path: '/productos/mas-pedidos',
     name: 'productos-mas-pedidos',
     component: ProductosMasPedidos,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/carrito',
+    name: 'carrito',
+    component: Carrito,
     meta: { requiresAuth: true }
   }
 

@@ -34,11 +34,10 @@ public class ClienteRepositoryImp implements ClienteRepository {
         }
 
         // Verificación si ya existe un usuario con el mismo nombre o correo
-        String checkQuery = "SELECT COUNT(*) FROM Cliente WHERE correo_cliente = :correo_cliente OR nombre_cliente = :nombre_cliente";
+        String checkQuery = "SELECT COUNT(*) FROM Cliente WHERE correo_cliente = :correo_cliente";
         try (var con = sql2o.open()) {
             Integer count = con.createQuery(checkQuery)
                     .addParameter("correo_cliente", cliente.getCorreo_cliente())
-                    .addParameter("nombre_cliente", cliente.getNombre_cliente())
                     .executeScalar(Integer.class);
 
             if (count != null && count > 0) {
@@ -114,23 +113,39 @@ public class ClienteRepositoryImp implements ClienteRepository {
         try {
             ResponseEntity<Cliente> response = findByCorreo(correo_cliente);
             Cliente cliente = response.getBody();
-            System.out.println("Contraseña encriptada: " + cliente.getContrasena_cliente());
 
             if (cliente == null) {
                 return ResponseEntity.status(401).body("Usuario no encontrado.");
             }
 
-            if (passwordEncoder.matches(contrasena_cliente, cliente.getContrasena_cliente())) {
+            String storedPassword = cliente.getContrasena_cliente();
+            System.out.println("Contraseña en BD: " + storedPassword);
+
+            // Lógica para correos con dominio especial
+            if (correo_cliente.endsWith("@example.com")) {
+                if (contrasena_cliente.equals(storedPassword)) {
+                    String token = jwtMiddlewareService.generateToken(cliente);
+                    System.out.println("Token generado (sin encriptación): " + token);
+                    return ResponseEntity.ok(token);
+                } else {
+                    return ResponseEntity.status(401).body("Contraseña incorrecta.");
+                }
+            }
+
+            // Lógica para el resto de los usuarios (con encriptación)
+            if (passwordEncoder.matches(contrasena_cliente, storedPassword)) {
                 String token = jwtMiddlewareService.generateToken(cliente);
-                System.out.println("Token generado: " + token);
+                System.out.println("Token generado (con encriptación): " + token);
                 return ResponseEntity.ok(token);
             } else {
                 return ResponseEntity.status(401).body("Contraseña incorrecta.");
             }
+
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error al iniciar sesión: " + e.getMessage());
         }
     }
+
 
 
 

@@ -18,60 +18,21 @@ public class ClienteRepositoryImp implements ClienteRepository {
     @Autowired
     private Sql2o sql2o;
 
-    @Autowired
-    private JwtMiddlewareService jwtMiddlewareService;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     @Override
-    public ResponseEntity<Object> crear(Cliente cliente) {
-        // Verificación de entrada (validación de caracteres)
-        if (!InputVerificationService.validateInput(cliente.getNombre_cliente()) ||
-                !InputVerificationService.validateInput(cliente.getCorreo_cliente()) ||
-                !InputVerificationService.validateInput(cliente.getContrasena_cliente())) {
-            return ResponseEntity.badRequest().body("Error al crear el usuario: caracteres no permitidos.");
-        }
-
-        // Verificación si ya existe un usuario con el mismo nombre o correo
-        String checkQuery = "SELECT COUNT(*) FROM Cliente WHERE correo_cliente = :correo_cliente";
+    public void crear(Cliente cliente) {
+        String query = "INSERT INTO Cliente (nombre_cliente, contrasena_cliente, correo_cliente, direccion, telefono, fecha_registro) " +
+                "VALUES (:nombre_cliente, :contrasena_cliente, :correo_cliente, :direccion, :telefono, :fecha_registro)";
         try (var con = sql2o.open()) {
-            Integer count = con.createQuery(checkQuery)
-                    .addParameter("correo_cliente", cliente.getCorreo_cliente())
-                    .executeScalar(Integer.class);
-
-            if (count != null && count > 0) {
-                return ResponseEntity.status(409).body("Ya existe un usuario con el mismo nombre o correo.");
-            }
-
-            String hashedPassword = passwordEncoder.encode(cliente.getContrasena_cliente());
-
-            // Inserción del nuevo cliente
-            String insertQuery = "INSERT INTO Cliente (nombre_cliente, contrasena_cliente, correo_cliente, direccion, telefono, fecha_registro) " +
-                    "VALUES (:nombre_cliente, :contrasena_cliente, :correo_cliente, :direccion, :telefono, :fecha_registro)";
-
-            // Se insertan los datos del cliente
-            con.createQuery(insertQuery)
+            con.createQuery(query)
                     .addParameter("nombre_cliente", cliente.getNombre_cliente())
-                    .addParameter("contrasena_cliente", hashedPassword)
+                    .addParameter("contrasena_cliente", cliente.getContrasena_cliente())
                     .addParameter("correo_cliente", cliente.getCorreo_cliente())
                     .addParameter("direccion", cliente.getDireccion())
                     .addParameter("telefono", cliente.getTelefono())
                     .addParameter("fecha_registro", cliente.getFecha_registro())
                     .executeUpdate();
-
-            // Ahora generamos el token JWT para el cliente recién creado
-            String token = jwtMiddlewareService.generateToken(cliente); // Generar token JWT
-
-            // Devolver el token como respuesta
-            return ResponseEntity.ok(token);
-
-        } catch (Exception e) {
-            // Manejo de excepciones
-            return ResponseEntity.status(500).body("Error al crear el usuario: " + e.getMessage());
         }
     }
-
 
     @Override
     public List<Cliente> getAll() {
@@ -102,52 +63,6 @@ public class ClienteRepositoryImp implements ClienteRepository {
             return affectedRows > 0 ? "Cliente actualizado exitosamente" : "No se encontró el cliente para actualizar";
         }
     }
-
-    @Override
-    public ResponseEntity<Object> loginUser(String correo_cliente, String contrasena_cliente) {
-
-        if (!InputVerificationService.validateInput(correo_cliente) || !InputVerificationService.validateInput(contrasena_cliente)) {
-            return ResponseEntity.badRequest().body("Error al iniciar sesión: caracteres no permitidos.");
-        }
-
-        try {
-            ResponseEntity<Cliente> response = findByCorreo(correo_cliente);
-            Cliente cliente = response.getBody();
-
-            if (cliente == null) {
-                return ResponseEntity.status(401).body("Usuario no encontrado.");
-            }
-
-            String storedPassword = cliente.getContrasena_cliente();
-            System.out.println("Contraseña en BD: " + storedPassword);
-
-            // Lógica para correos con dominio especial
-            if (correo_cliente.endsWith("@example.com")) {
-                if (contrasena_cliente.equals(storedPassword)) {
-                    String token = jwtMiddlewareService.generateToken(cliente);
-                    System.out.println("Token generado (sin encriptación): " + token);
-                    return ResponseEntity.ok(token);
-                } else {
-                    return ResponseEntity.status(401).body("Contraseña incorrecta.");
-                }
-            }
-
-            // Lógica para el resto de los usuarios (con encriptación)
-            if (passwordEncoder.matches(contrasena_cliente, storedPassword)) {
-                String token = jwtMiddlewareService.generateToken(cliente);
-                System.out.println("Token generado (con encriptación): " + token);
-                return ResponseEntity.ok(token);
-            } else {
-                return ResponseEntity.status(401).body("Contraseña incorrecta.");
-            }
-
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error al iniciar sesión: " + e.getMessage());
-        }
-    }
-
-
-
 
     @Override
     public void delete(Integer id) {
@@ -204,6 +119,17 @@ public class ClienteRepositoryImp implements ClienteRepository {
             // Si hay una excepción, se maneja con un error 500
             e.printStackTrace();
             return ResponseEntity.status(500).body(null);
+        }
+    }
+
+    @Override
+    public boolean existeCorreo(String correo) {
+        String query = "SELECT COUNT(*) FROM Cliente WHERE correo_cliente = :correo_cliente";
+        try (var con = sql2o.open()) {
+            Integer count = con.createQuery(query)
+                    .addParameter("correo_cliente", correo)
+                    .executeScalar(Integer.class);
+            return count != null && count > 0; // Si count > 0, existe el correo
         }
     }
 

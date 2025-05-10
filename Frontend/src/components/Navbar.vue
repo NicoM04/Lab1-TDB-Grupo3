@@ -30,10 +30,15 @@ export default {
 
 <style scoped>
 .navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000; /* para que quede encima de todo */
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
+  padding: 1px 20px;
   background-color: #007bff;
   color: white;
 }
@@ -41,17 +46,19 @@ export default {
 .navbar .navbar-brand h2 {
   margin: 0;
   color : white;
+  font-size: 30px;
+  font-weight: bold;
 }
 
 .navbar-links {
   display: flex;
-  gap: 20px;
+  gap: 15px;
 }
 
 .navbar-item {
   color: white;
   text-decoration: none;
-  font-size: 16px;
+  font-size: 20px;
 }
 
 .navbar-item:hover {

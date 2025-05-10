@@ -103,55 +103,122 @@ export default {
 
 <style scoped>
 .desempeno-repartidor-container {
-  padding: 20px;
+  padding: 40px 20px;
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #2c3e50;
 }
 
 .filters {
-  margin-bottom: 20px;
   display: flex;
-  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
   flex-wrap: wrap;
+  margin-bottom: 30px;
 }
 
 .filters label {
-  margin-right: 10px;
+  font-weight: 600;
+  color: #444;
 }
 
 .filters select {
-  padding: 5px;
+  padding: 8px 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  min-width: 200px;
 }
 
 section {
-  margin-bottom: 30px;
+  margin-bottom: 40px;
+}
+
+.performance h3 {
+  font-size: 1.3rem;
+  margin-bottom: 15px;
+  color: #34495e;
+  text-align: center;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 10px;
+  background-color: #fdfdfd;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+thead {
+  background-color: #007bff;
+  color: #fff;
 }
 
 th,
 td {
-  padding: 10px;
-  text-align: left;
-  border: 1px solid #ddd;
+  padding: 14px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
 }
 
-th {
-  background-color: #f2f2f2;
+tbody tr:hover {
+  background-color: #f7f7f7;
 }
 
-button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  cursor: pointer;
-  border-radius: 4px;
+td {
+  color: #333;
+  font-weight: 500;
 }
 
-button:hover {
-  background-color: #0056b3;
+@media (max-width: 600px) {
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filters select {
+    width: 100%;
+  }
+
+  table,
+  thead,
+  tbody,
+  th,
+  td,
+  tr {
+    display: block;
+  }
+
+  tr {
+    margin-bottom: 1rem;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    padding: 10px;
+  }
+
+  td,
+  th {
+    text-align: left;
+    padding: 10px;
+    border: none;
+    border-bottom: 1px solid #eee;
+  }
+
+  thead {
+    display: none;
+  }
 }
+
 </style>

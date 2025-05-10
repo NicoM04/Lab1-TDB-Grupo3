@@ -14,6 +14,12 @@ import ProductosMasPedidos from '@/components/ProductosMasPedidos.vue';
 //Definir las rutas de la aplicacion
 const routes = [
     {
+    path: '/',
+    redirect: '/login',
+    component: Login,
+    meta: { requiresAuth: false }
+  },
+    {
     path: "/home",
     name: "home",
     component: Dashboard,

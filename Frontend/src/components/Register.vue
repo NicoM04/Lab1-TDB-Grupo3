@@ -83,15 +83,24 @@ export default {
 
 <style scoped>
 .register-container {
-  max-width: 400px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #f7f7f7;
-  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%; /* Ocupa todo el ancho disponible */
+  height: 90%;
+  max-width: 400px; /* Ancho máximo del formulario */
+  margin: 0 auto; /* Centrar horizontalmente */
+  padding: 40px; /* Aumentar el padding */
+  background-color: #007bff;
+  color: rgb(255, 255, 255);
+  border-radius: 12px; /* Bordes más redondeados */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Agregar sombra */
 }
 
 .form-group {
-  margin-bottom: 1em;
+  margin-bottom: 1.5em; /* Aumentar el espacio entre los campos */
+  color: rgb(255, 255, 255);
 }
 
 label {
@@ -101,20 +110,22 @@ label {
 
 input {
   width: 100%;
-  padding: 8px;
+  padding: 12px; /* Aumentar el padding */
   margin-bottom: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  font-size: 1rem; /* Aumentar el tamaño de la fuente */
 }
 
 button {
   width: 100%;
-  padding: 10px;
+  padding: 12px; /* Aumentar el padding */
   background-color: #28a745;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 1rem; /* Aumentar el tamaño de la fuente */
 }
 
 button:hover {

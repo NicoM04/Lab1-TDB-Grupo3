@@ -63,7 +63,18 @@ export default {
 
 <style scoped>
 .dashboard-container {
+  display: flex;
+  flex-direction: column; 
   padding: 20px;
+}
+
+/* Título principal centrado y grande */
+.dashboard-container h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #cfcfcf;
+  margin-bottom: 40px;
 }
 
 section {

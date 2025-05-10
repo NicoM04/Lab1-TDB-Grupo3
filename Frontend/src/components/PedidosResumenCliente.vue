@@ -73,7 +73,7 @@ export default {
     };
   },
   created() {
-    const idCliente = localStorage.getItem("id_cliente")-1; // Obtener el id_cliente de localStorage
+    const idCliente = localStorage.getItem("id_cliente"); // Obtener el id_cliente de localStorage
     this.obtenerPedidos(idCliente); // Pasar el id_cliente al método obtenerPedidos
   },
   methods: {
@@ -144,62 +144,98 @@ export default {
 
 <style scoped>
 .pedidos-resumen-container {
-  padding: 20px;
+  padding: 40px 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #333;
 }
 
 .filters {
-  margin-bottom: 20px;
   display: flex;
-  gap: 10px;
   flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin-bottom: 30px;
 }
 
 .filters label {
-  margin-right: 10px;
+  font-weight: 600;
+  margin-right: 5px;
+  color: #444;
 }
 
 .filters select,
 .filters input {
-  padding: 5px;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
 }
 
 section {
-  margin-bottom: 30px;
+  margin-bottom: 40px;
+}
+
+.summary h3,
+.total h3 {
+  font-size: 1.3rem;
+  color: #2c3e50;
+  margin-bottom: 15px;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 10px;
+  background-color: #fafafa;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+thead {
+  background-color: #007bff;
+  color: white;
 }
 
 th,
 td {
-  padding: 10px;
-  text-align: left;
-  border: 1px solid #ddd;
+  padding: 14px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
 }
 
-th {
-  background-color: #f2f2f2;
+tbody tr:hover {
+  background-color: #f1f1f1;
 }
 
 button {
-  background-color: #007bff;
+  background-color: #28a745;
   color: white;
   border: none;
-  padding: 8px 12px;
+  padding: 8px 16px;
+  border-radius: 6px;
   cursor: pointer;
-  border-radius: 4px;
+  transition: background-color 0.3s ease;
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #218838;
 }
 
-.total {
-  font-size: 1.2em;
-  font-weight: bold;
-  color: #333;
+.total p {
+  font-size: 1.1rem;
+  color: #555;
+  margin: 6px 0;
+  text-align: center;
 }
+
 </style>

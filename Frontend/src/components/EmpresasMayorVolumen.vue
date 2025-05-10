@@ -114,34 +114,57 @@ export default {
 
 <style scoped>
 .empresas-fallidas-container {
-  padding: 20px;
+  padding: 40px 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+h2 {
+  margin-bottom: 30px;
+  font-size: 1.8rem;
+  text-align: center;
+  color: #2c3e50;
 }
 
 section {
-  margin-bottom: 30px;
+  margin-bottom: 40px;
 }
 
 h3 {
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  font-size: 1.4rem;
+  color: #343a40;
+  border-left: 4px solid #2835a7;
+  padding-left: 10px;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
+  background-color: #fdfdfd;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
-th, td {
-  padding: 8px;
+thead {
+  background-color: #28a745;
+  color: #fff;
+}
+
+th,
+td {
+  padding: 14px;
   text-align: left;
-  border: 1px solid #ddd;
+  border-bottom: 1px solid #eaeaea;
 }
 
-th {
-  background-color: #f2f2f2;
-}
-
-h2 {
-  margin-bottom: 20px;
-  font-size: 24px;
+tbody tr:hover {
+  background-color: #f9f9f9;
 }
 </style>
+

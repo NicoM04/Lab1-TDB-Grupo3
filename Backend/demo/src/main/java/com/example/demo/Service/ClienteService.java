@@ -56,8 +56,8 @@ public class ClienteService {
     }
 
     // Obtener todos los clientes
-    public List<Cliente> obtenerTodosLosClientes() {
-        return clienteRepository.getAll();
+    public List<Cliente> obtenerTodosLosClientes(int page, int size) {
+        return clienteRepository.getAll(page, size);
     }
 
     // Obtener un cliente por su ID

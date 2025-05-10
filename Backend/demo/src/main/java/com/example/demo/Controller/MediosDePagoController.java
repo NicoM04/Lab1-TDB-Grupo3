@@ -25,8 +25,9 @@ public class MediosDePagoController {
     }
 
     @GetMapping("/getAll")
-    public List<MedioDePago> obtenerTodos() {
-        return mediosDePagoService.getall();
+    public List<MedioDePago> obtenerTodos(@RequestParam(defaultValue = "1") int page,
+                                          @RequestParam(defaultValue = "10") int size) {
+        return mediosDePagoService.getall(page, size);
     }
 
     @GetMapping("/getById/{id}")

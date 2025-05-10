@@ -24,8 +24,9 @@ public class NotificacionController {
 
     // Obtener todas las notificaciones
     @GetMapping
-    public List<Notificacion> obtenerNotificaciones() {
-        return notificacionService.obtenerNotificaciones();
+    public List<Notificacion> obtenerNotificaciones(@RequestParam(defaultValue = "1") int page,
+                                                    @RequestParam(defaultValue = "10") int size) {
+        return notificacionService.obtenerNotificaciones(page, size);
     }
 
     // Actualizar notificación

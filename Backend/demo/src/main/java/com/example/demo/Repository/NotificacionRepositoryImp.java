@@ -35,16 +35,21 @@ public class NotificacionRepositoryImp implements NotificacionRepository {
     }
 
     @Override
-    public List<Notificacion> getAll() {
+    public List<Notificacion> getAll(int page, int size) {
+        int offset = (page - 1) * size;
+        String sql = "SELECT * FROM notificacion LIMIT :size OFFSET :offset";
+
         try (Connection conn = sql2o.open()) {
-            String sql = "SELECT * FROM notificacion";
             return conn.createQuery(sql)
+                    .addParameter("size", size)
+                    .addParameter("offset", offset)
                     .executeAndFetch(Notificacion.class);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return null;
         }
     }
+
 
     @Override
     public String update(Notificacion notificacion, Integer id) {

@@ -19,8 +19,8 @@ public class EmpresasAsociadasService {
     }
 
     // Obtener todas las empresas
-    public List<EmpresasAsociadas> obtenerEmpresas() {
-        return empresasAsociadasRepository.getAll();
+    public List<EmpresasAsociadas> obtenerEmpresas(int page, int size) {
+        return empresasAsociadasRepository.getAll(page, size);
     }
 
     // Actualizar empresa
@@ -33,8 +33,8 @@ public class EmpresasAsociadasService {
         empresasAsociadasRepository.delete(id);
     }
 
-    public List<EmpresasAsociadas> obtenerEmpresasConMasFallos() {
-        return empresasAsociadasRepository.getEmpresasConMasFallos();
+    public List<EmpresasAsociadas> obtenerEmpresasConMasFallos(int page, int size) {
+        return empresasAsociadasRepository.getEmpresasConMasFallos(page, size);
     }
 
 }

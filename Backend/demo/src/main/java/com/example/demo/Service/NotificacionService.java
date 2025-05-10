@@ -19,8 +19,8 @@ public class NotificacionService {
     }
 
     // Obtener todas las notificaciones
-    public List<Notificacion> obtenerNotificaciones() {
-        return notificacionRepository.getAll();
+    public List<Notificacion> obtenerNotificaciones(int page, int size) {
+        return notificacionRepository.getAll(page, size);
     }
 
     // Actualizar notificación

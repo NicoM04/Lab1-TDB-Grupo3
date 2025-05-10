@@ -19,8 +19,8 @@ public class RepartidorService {
         return repartidoresRepository.crear(repartidor);
     }
 
-    public List<Repartidor> getall() {
-        return repartidoresRepository.getAll();
+    public List<Repartidor> getall(int page, int size) {
+        return repartidoresRepository.getAll(page, size);
     }
 
     public Repartidor findById(Integer id) {
@@ -35,8 +35,8 @@ public class RepartidorService {
         repartidoresRepository.delete(id);
     }
 
-    public List<Map<String, Object>> obtenerTiempoPromedioEntregaPorRepartidor(){
-        return repartidoresRepository.obtenerTiempoPromedioEntregaPorRepartidor();
+    public List<Map<String, Object>> obtenerTiempoPromedioEntregaPorRepartidor(int page, int size){
+        return repartidoresRepository.obtenerTiempoPromedioEntregaPorRepartidor(page, size);
     }
 
     public List<Map<String, Object>> obtenerTop3RepartidoresConMejorRendimiento(){

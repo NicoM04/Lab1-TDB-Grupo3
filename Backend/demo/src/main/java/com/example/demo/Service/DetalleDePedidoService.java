@@ -4,6 +4,7 @@ import com.example.demo.Entity.DetalleDePedido;
 import com.example.demo.Repository.DetalleDePedidoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -17,8 +18,8 @@ public class DetalleDePedidoService {
         return detalleDePedidoRepository.crear(detalle);
     }
 
-    public List<DetalleDePedido> obtenerTodos() {
-        return detalleDePedidoRepository.getAll();
+    public List<DetalleDePedido> obtenerTodos(int page, int size) {
+        return detalleDePedidoRepository.getAll(page, size);
     }
 
     public DetalleDePedido getById(Integer id) {

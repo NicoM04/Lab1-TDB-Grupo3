@@ -23,8 +23,9 @@ public class DetalleDePedidoController {
     }
 
     @GetMapping("/getAll")
-    public List<DetalleDePedido> obtenerTodos() {
-        return detalleDePedidoService.obtenerTodos();
+    public List<DetalleDePedido> obtenerTodos(@RequestParam(defaultValue = "1") int page,
+                                              @RequestParam(defaultValue = "10") int size) {
+        return detalleDePedidoService.obtenerTodos(page, size);
     }
 
     @GetMapping("/getById/{id}")

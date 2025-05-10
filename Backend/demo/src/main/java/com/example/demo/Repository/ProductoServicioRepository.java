@@ -7,11 +7,11 @@ import java.util.List;
 
 public interface ProductoServicioRepository {
     ProductoServicio crear(ProductoServicio producto);
-    List<ProductoServicio> getAll();
+    List<ProductoServicio> getAll(int page, int size);
     String update(ProductoServicio producto, Integer id);
     void delete(Integer id);
     ProductoServicio getById(Integer id);
 
     //Metodo para obtener los productos mas pedidos por categoria el ultimo mes
-    List<ProductoMasPedidoDTO> obtenerMasPedidosPorCategoriaUltimoMes();
+    List<ProductoMasPedidoDTO> obtenerMasPedidosPorCategoriaUltimoMes(int page, int size);
 }

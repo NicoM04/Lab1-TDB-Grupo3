@@ -30,10 +30,13 @@ public class CalificacionRepositoryImp implements CalificacionRepository {
     }
 
     @Override
-    public List<Calificacion> getAll() {
-        String sql = "SELECT id_calificacion, id_repartidor, valor AS puntuacion, comentario, fecha_calificacion FROM calificaciones";
+    public List<Calificacion> getAll(int page, int size) {
+        String sql = "SELECT id_calificacion, id_repartidor, puntuacion, comentario, fecha_calificacion " +
+                "FROM calificaciones LIMIT :size OFFSET :offset";
         try (var con = sql2o.open()) {
             return con.createQuery(sql)
+                    .addParameter("size", size)
+                    .addParameter("offset", (page - 1) * size)
                     .executeAndFetch(Calificacion.class);
         }
     }

@@ -24,8 +24,9 @@ public class EmpresasAsociadasController {
 
     // Obtener todas las empresas
     @GetMapping
-    public List<EmpresasAsociadas> obtenerEmpresas() {
-        return empresasAsociadasService.obtenerEmpresas();
+    public List<EmpresasAsociadas> obtenerEmpresas(@RequestParam(defaultValue = "1") int page,
+                                                   @RequestParam(defaultValue = "10") int size) {
+        return empresasAsociadasService.obtenerEmpresas(page, size);
     }
 
     // Actualizar empresa por ID
@@ -41,8 +42,9 @@ public class EmpresasAsociadasController {
     }
 
     @GetMapping("/mas-fallos")
-    public List<EmpresasAsociadas> empresasConMasFallos() {
-        return empresasAsociadasService.obtenerEmpresasConMasFallos();
+    public List<EmpresasAsociadas> empresasConMasFallos(@RequestParam(defaultValue = "1") int page,
+                                                        @RequestParam(defaultValue = "10") int size) {
+        return empresasAsociadasService.obtenerEmpresasConMasFallos(page, size);
     }
 
 }

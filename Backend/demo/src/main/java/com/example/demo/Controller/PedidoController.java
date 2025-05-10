@@ -27,8 +27,9 @@ public class PedidoController {
     }
 
     @GetMapping("/getAll")
-    public List<Pedido> obtenerTodos() {
-        return pedidoService.obtenerTodos();
+    public List<Pedido> obtenerTodos(@RequestParam(defaultValue = "1") int page,
+                                     @RequestParam(defaultValue = "10") int size) {
+        return pedidoService.obtenerTodos(page, size);
     }
 
     @GetMapping("/resumenCliente/{id}")
@@ -90,8 +91,10 @@ public class PedidoController {
     }
 
     @GetMapping("/cliente/{idCliente}")
-    public ResponseEntity<List<Pedido>> obtenerPedidosPorCliente(@PathVariable Integer idCliente) {
-        List<Pedido> pedidos = pedidoService.obtenerPedidosPorCliente(idCliente);
+    public ResponseEntity<List<Pedido>> obtenerPedidosPorCliente(@PathVariable Integer idCliente,
+                                                                 @RequestParam(defaultValue = "1") int page,
+                                                                 @RequestParam(defaultValue = "10") int size) {
+        List<Pedido> pedidos = pedidoService.obtenerPedidosPorCliente(idCliente, page, size);
         if (pedidos.isEmpty()) {
             return ResponseEntity.status(404).body(null); // No hay pedidos para este cliente
         }

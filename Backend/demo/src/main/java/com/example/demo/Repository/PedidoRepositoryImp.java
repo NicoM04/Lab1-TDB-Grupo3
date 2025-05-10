@@ -40,13 +40,21 @@ public class PedidoRepositoryImp implements PedidoRepository {
     }
 
     @Override
-    public List<Pedido> getAll() {
-        String sql = "SELECT * FROM Pedido";
+    public List<Pedido> getAll(int page, int size) {
+        int offset = (page - 1) * size;
+        String sql = "SELECT * FROM Pedido LIMIT :size OFFSET :offset";
+
         try (var con = sql2o.open()) {
             return con.createQuery(sql)
+                    .addParameter("size", size)
+                    .addParameter("offset", offset)
                     .executeAndFetch(Pedido.class);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
         }
     }
+
 
     @Override
     public Pedido getById(Integer id) {
@@ -188,14 +196,22 @@ public class PedidoRepositoryImp implements PedidoRepository {
 
     // Método para obtener los pedidos por id_cliente
     @Override
-    public List<Pedido> getPedidosByCliente(Integer idCliente) {
-        String sql = "SELECT * FROM Pedido WHERE id_cliente = :id_cliente"; // Query para obtener pedidos por id_cliente
+    public List<Pedido> getPedidosByCliente(Integer idCliente, int page, int size) {
+        int offset = (page - 1) * size;
+        String sql = "SELECT * FROM Pedido WHERE id_cliente = :id_cliente LIMIT :size OFFSET :offset";
+
         try (var con = sql2o.open()) {
             return con.createQuery(sql)
-                    .addParameter("id_cliente", idCliente) // Agregar el parámetro del id_cliente
-                    .executeAndFetch(Pedido.class); // Ejecutar la consulta y mapear a la entidad Pedido
+                    .addParameter("id_cliente", idCliente)
+                    .addParameter("size", size)
+                    .addParameter("offset", offset)
+                    .executeAndFetch(Pedido.class);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
         }
     }
+
 
 
 

@@ -36,13 +36,17 @@ public class RepartidoresRepositoryImp implements RepartidoresRepository {
     }
 
     @Override
-    public List<Repartidor> getAll() {
-        String sql = "SELECT * FROM repartidores";
+    public List<Repartidor> getAll(int page, int size) {
+        int offset = (page - 1) * size;
+        String sql = "SELECT * FROM repartidores LIMIT :size OFFSET :offset";
         try (var con = sql2o.open()) {
             return con.createQuery(sql)
+                    .addParameter("size", size)
+                    .addParameter("offset", offset)
                     .executeAndFetch(Repartidor.class);
         }
     }
+
 
     @Override
     public Repartidor findById(Integer id) {
@@ -86,17 +90,21 @@ public class RepartidoresRepositoryImp implements RepartidoresRepository {
 
     //CONSULTA SQL COMPLEJA 4)
     @Override
-    public List<Map<String, Object>> obtenerTiempoPromedioEntregaPorRepartidor() {
-        try (var conn = sql2o.open()) {
-            String sql = """
-            SELECT id_repartidor,
-                   AVG( fecha_entrega - fecha_pedido) AS tiempo_promedio_dias
-            FROM pedido
-            WHERE fecha_entrega IS NOT NULL AND fecha_pedido IS NOT NULL
-            GROUP BY id_repartidor
-        """;
+    public List<Map<String, Object>> obtenerTiempoPromedioEntregaPorRepartidor(int page, int size) {
+        int offset = (page - 1) * size;
+        String sql = """
+        SELECT id_repartidor,
+               AVG( fecha_entrega - fecha_pedido) AS tiempo_promedio_dias
+        FROM pedido
+        WHERE fecha_entrega IS NOT NULL AND fecha_pedido IS NOT NULL
+        GROUP BY id_repartidor
+        LIMIT :size OFFSET :offset
+    """;
 
+        try (var conn = sql2o.open()) {
             return conn.createQuery(sql)
+                    .addParameter("size", size)
+                    .addParameter("offset", offset)
                     .executeAndFetchTable()
                     .asList();
         } catch (Exception e) {
@@ -104,6 +112,7 @@ public class RepartidoresRepositoryImp implements RepartidoresRepository {
             return null;
         }
     }
+
 
     //CONSULTA SQL COMPLEJA 5)
     @Override

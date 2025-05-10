@@ -33,10 +33,14 @@ public class EmpresasAsociadasRepositoryImp implements EmpresasAsociadasReposito
     }
 
     @Override
-    public List<EmpresasAsociadas> getAll() {
+    public List<EmpresasAsociadas> getAll(int page, int size) {
+        int offset = (page - 1) * size;
+        String sql = "SELECT * FROM empresas_asociadas LIMIT :size OFFSET :offset";
+
         try (Connection conn = sql2o.open()) {
-            String sql = "SELECT * FROM empresas_asociadas";
             return conn.createQuery(sql)
+                    .addParameter("size", size)
+                    .addParameter("offset", offset)
                     .executeAndFetch(EmpresasAsociadas.class);
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -76,23 +80,28 @@ public class EmpresasAsociadasRepositoryImp implements EmpresasAsociadasReposito
     }
 
     @Override
-    public List<EmpresasAsociadas> getEmpresasConMasFallos() {
-        try (Connection conn = sql2o.open()) {
-            String sql = """
-            SELECT e.*
-            FROM empresas_asociadas e
-            JOIN pedido p ON e.id_empresa = p.id_empresa
-            WHERE p.estado = 'fallido'
-            GROUP BY e.id_empresa
-            ORDER BY COUNT(p.id_pedido) DESC
-            """;
+    public List<EmpresasAsociadas> getEmpresasConMasFallos(int page, int size) {
+        int offset = (page - 1) * size;
+        String sql = """
+        SELECT e.*
+        FROM empresas_asociadas e
+        JOIN pedido p ON e.id_empresa = p.id_empresa
+        WHERE p.estado = 'fallido'
+        GROUP BY e.id_empresa
+        ORDER BY COUNT(p.id_pedido) DESC
+        LIMIT :size OFFSET :offset
+        """;
 
+        try (Connection conn = sql2o.open()) {
             return conn.createQuery(sql)
+                    .addParameter("size", size)
+                    .addParameter("offset", offset)
                     .executeAndFetch(EmpresasAsociadas.class);
         } catch (Exception e) {
             System.out.println("Error al obtener empresas con más fallos: " + e.getMessage());
             return null;
         }
     }
+
 
 }

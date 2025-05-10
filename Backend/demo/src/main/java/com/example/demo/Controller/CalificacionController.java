@@ -26,9 +26,11 @@ public class CalificacionController {
     }
 
     @GetMapping("/getAll")
-    public List<Calificacion> obtenerTodos() {
-        return calificacionService.getall();
+    public List<Calificacion> obtenerTodos(@RequestParam(defaultValue = "1") int page,
+                                           @RequestParam(defaultValue = "10") int size) {
+        return calificacionService.getAll(page, size);
     }
+
 
     @GetMapping("/getById/{id}")
     public ResponseEntity<Calificacion> obtenerPorId(@PathVariable("id") Integer id) {

@@ -20,8 +20,8 @@ public class PedidoService {
         return pedidoRepository.crear(pedido);
     }
 
-    public List<Pedido> obtenerTodos() {
-        return pedidoRepository.getAll();
+    public List<Pedido> obtenerTodos(int page, int size) {
+        return pedidoRepository.getAll(page, size);
     }
 
     public Pedido getById(Integer id) {
@@ -55,7 +55,7 @@ public class PedidoService {
     }
 
     // Método para obtener los pedidos de un cliente
-    public List<Pedido> obtenerPedidosPorCliente(Integer idCliente) {
-        return pedidoRepository.getPedidosByCliente(idCliente);
+    public List<Pedido> obtenerPedidosPorCliente(Integer idCliente, int page, int size) {
+        return pedidoRepository.getPedidosByCliente(idCliente, page, size);
     }
 }

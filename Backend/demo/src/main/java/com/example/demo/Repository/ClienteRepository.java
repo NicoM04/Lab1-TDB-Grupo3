@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ClienteRepository {
     public void crear(Cliente cliente);
-    public List<Cliente> getAll();
+    public List<Cliente> getAll(int page, int size);
     public String update(Cliente cliente, Integer id);
     public void delete(Integer id);
     public Cliente findById(Integer id);

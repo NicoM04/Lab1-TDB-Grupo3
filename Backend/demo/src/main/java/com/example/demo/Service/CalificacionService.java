@@ -19,8 +19,8 @@ public class CalificacionService {
         return calificacionRepository.crear(calificacion);
     }
 
-    public List<Calificacion> getall() {
-        return calificacionRepository.getAll();
+    public List<Calificacion> getAll(int page, int size) {
+        return calificacionRepository.getAll(page, size);
     }
 
     public Calificacion findById(Integer id) {

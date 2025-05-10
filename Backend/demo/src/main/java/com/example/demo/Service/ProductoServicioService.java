@@ -18,8 +18,8 @@ public class ProductoServicioService {
         return productoServicioRepository.crear(producto);
     }
 
-    public List<ProductoServicio> obtenerTodos() {
-        return productoServicioRepository.getAll();
+    public List<ProductoServicio> obtenerTodos(int page, int size) {
+        return productoServicioRepository.getAll(page, size);
     }
 
     public ProductoServicio getById(Integer id) {
@@ -35,7 +35,7 @@ public class ProductoServicioService {
     }
 
     //Obtiene productos mas pedidos por categoría en el mes
-    public List<ProductoMasPedidoDTO> obtenerMasPedidosPorCategoriaUltimoMes() {
-        return productoServicioRepository.obtenerMasPedidosPorCategoriaUltimoMes();
+    public List<ProductoMasPedidoDTO> obtenerMasPedidosPorCategoriaUltimoMes(int page, int size) {
+        return productoServicioRepository.obtenerMasPedidosPorCategoriaUltimoMes(page, size);
     }
 }

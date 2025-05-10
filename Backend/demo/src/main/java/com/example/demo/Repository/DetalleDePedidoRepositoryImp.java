@@ -30,13 +30,21 @@ public class DetalleDePedidoRepositoryImp implements DetalleDePedidoRepository {
     }
 
     @Override
-    public List<DetalleDePedido> getAll() {
-        String sql = "SELECT * FROM Detalle_de_pedido";
+    public List<DetalleDePedido> getAll(int page, int size) {
+        // Calculamos el offset basado en el número de página y tamaño de página
+        int offset = (page - 1) * size;
+
+        // Consulta SQL con LIMIT y OFFSET
+        String sql = "SELECT * FROM Detalle_de_pedido LIMIT :size OFFSET :offset";
+
         try (var con = sql2o.open()) {
             return con.createQuery(sql)
+                    .addParameter("size", size)
+                    .addParameter("offset", offset)
                     .executeAndFetch(DetalleDePedido.class);
         }
     }
+
 
     @Override
     public DetalleDePedido getById(Integer id) {

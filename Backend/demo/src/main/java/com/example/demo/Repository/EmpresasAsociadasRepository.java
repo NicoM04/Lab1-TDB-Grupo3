@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface EmpresasAsociadasRepository {
     public EmpresasAsociadas crear(EmpresasAsociadas empresa);
-    public List<EmpresasAsociadas> getAll();
+    public List<EmpresasAsociadas> getAll(int page, int size);
     public String update(EmpresasAsociadas empresa, Integer id);
     public void delete(Integer id);
 
-    List<EmpresasAsociadas> getEmpresasConMasFallos();
+    List<EmpresasAsociadas> getEmpresasConMasFallos(int page, int size);
 }

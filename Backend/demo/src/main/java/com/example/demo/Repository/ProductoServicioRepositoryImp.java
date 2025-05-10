@@ -31,10 +31,14 @@ public class ProductoServicioRepositoryImp implements ProductoServicioRepository
     }
 
     @Override
-    public List<ProductoServicio> getAll() {
-        String sql = "SELECT * FROM ProductoServicio";
+    public List<ProductoServicio> getAll(int page, int size) {
+        int offset = (page - 1) * size;
+        String sql = "SELECT * FROM ProductoServicio LIMIT :size OFFSET :offset";
         try (var con = sql2o.open()) {
-            return con.createQuery(sql).executeAndFetch(ProductoServicio.class);
+            return con.createQuery(sql)
+                    .addParameter("size", size)
+                    .addParameter("offset", offset)
+                    .executeAndFetch(ProductoServicio.class);
         }
     }
 
@@ -79,7 +83,8 @@ public class ProductoServicioRepositoryImp implements ProductoServicioRepository
 
     //CONSULTA COMPLEJA SQL 2)
     @Override
-    public List<ProductoMasPedidoDTO> obtenerMasPedidosPorCategoriaUltimoMes() {
+    public List<ProductoMasPedidoDTO> obtenerMasPedidosPorCategoriaUltimoMes(int page, int size) {
+        int offset = (page - 1) * size;
         String sql = """
         WITH ProductoPedidos AS (
             SELECT ps.categoria,
@@ -98,14 +103,17 @@ public class ProductoServicioRepositoryImp implements ProductoServicioRepository
             FROM ProductoPedidos
         ) AS ranked
         WHERE rank = 1
-        ORDER BY categoria;
+        ORDER BY categoria
+        LIMIT :size OFFSET :offset;
     """;
-
         try (var con = sql2o.open()) {
             return con.createQuery(sql)
+                    .addParameter("size", size)
+                    .addParameter("offset", offset)
                     .executeAndFetch(ProductoMasPedidoDTO.class);
         }
     }
+
 
 
 

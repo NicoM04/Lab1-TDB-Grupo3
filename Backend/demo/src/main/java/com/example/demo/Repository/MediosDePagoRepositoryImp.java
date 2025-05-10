@@ -32,13 +32,19 @@ public class MediosDePagoRepositoryImp implements MediosDePagoRepository {
     }
 
     @Override
-    public List<MedioDePago> getAll() {
-        String sql = "SELECT id_pago, metodo_pago, fecha_pago, monto_total FROM medios_de_pago";
+    public List<MedioDePago> getAll(int page, int size) {
+
+        int offset = (page - 1) * size;
+        String sql = "SELECT id_pago, metodo_pago, fecha_pago, monto_total FROM medios_de_pago LIMIT :size OFFSET :offset";
+
         try (var con = sql2o.open()) {
             return con.createQuery(sql)
+                    .addParameter("size", size)
+                    .addParameter("offset", offset)
                     .executeAndFetch(MedioDePago.class);
         }
     }
+
 
     @Override
     public String update(MedioDePago medioDePago, Integer id) {

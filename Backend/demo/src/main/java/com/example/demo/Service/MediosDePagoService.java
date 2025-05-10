@@ -18,8 +18,8 @@ public class MediosDePagoService {
         return mediosDePagoRepository.crear(medioDePago);
     }
 
-    public List<MedioDePago> getall() {
-        return mediosDePagoRepository.getAll();
+    public List<MedioDePago> getall(int page, int size) {
+        return mediosDePagoRepository.getAll(page, size);
     }
 
     public MedioDePago findById(Integer id) {

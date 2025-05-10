@@ -23,8 +23,9 @@ public class ProductoServicioController {
     }
 
     @GetMapping("/getAll")
-    public List<ProductoServicio> obtenerTodos() {
-        return productoServicioService.obtenerTodos();
+    public List<ProductoServicio> obtenerTodos(@RequestParam(defaultValue = "1") int page,
+                                               @RequestParam(defaultValue = "10") int size) {
+        return productoServicioService.obtenerTodos(page, size);
     }
 
     @GetMapping("/getById/{id}")
@@ -48,8 +49,9 @@ public class ProductoServicioController {
     }
 
     @GetMapping("/masPedidosUltimoMes")
-    public List<ProductoMasPedidoDTO> obtenerMasPedidosUltimoMes() {
-        return productoServicioService.obtenerMasPedidosPorCategoriaUltimoMes();
+    public List<ProductoMasPedidoDTO> obtenerMasPedidosUltimoMes(@RequestParam(defaultValue = "1") int page,
+                                                                 @RequestParam(defaultValue = "10") int size) {
+        return productoServicioService.obtenerMasPedidosPorCategoriaUltimoMes(page, size);
     }
 
 }

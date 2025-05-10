@@ -29,8 +29,9 @@ public class ClienteController {
 
     // Obtener todos los clientes
     @GetMapping("/getAll")
-    public ResponseEntity<List<Cliente>> obtenerTodosLosClientes() {
-        List<Cliente> clientes = clienteService.obtenerTodosLosClientes();
+    public ResponseEntity<List<Cliente>> obtenerTodosLosClientes(@RequestParam(defaultValue = "1") int page,
+                                                                 @RequestParam(defaultValue = "10") int size) {
+        List<Cliente> clientes = clienteService.obtenerTodosLosClientes(page, size);
         return clientes.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(clientes);
     }
 

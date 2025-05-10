@@ -35,13 +35,16 @@ public class ClienteRepositoryImp implements ClienteRepository {
     }
 
     @Override
-    public List<Cliente> getAll() {
-        String sql = "SELECT * FROM Cliente";
+    public List<Cliente> getAll(int page, int size) {
+        String sql = "SELECT * FROM Cliente LIMIT :size OFFSET :offset";
         try (var con = sql2o.open()) {
             return con.createQuery(sql)
+                    .addParameter("size", size)
+                    .addParameter("offset", (page - 1) * size)
                     .executeAndFetch(Cliente.class);
         }
     }
+
 
     @Override
     public String update(Cliente cliente, Integer id) {

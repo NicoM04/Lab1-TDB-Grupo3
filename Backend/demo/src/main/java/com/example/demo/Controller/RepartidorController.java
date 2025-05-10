@@ -26,8 +26,9 @@ public class RepartidorController {
     }
 
     @GetMapping("/getAll")
-    public List<Repartidor> obtenerTodos() {
-        return repartidorService.getall();
+    public List<Repartidor> obtenerTodos(@RequestParam(defaultValue = "1") int page,
+                                         @RequestParam(defaultValue = "10") int size) {
+        return repartidorService.getall(page, size);
     }
 
     @GetMapping("/getById/{id}")
@@ -50,8 +51,9 @@ public class RepartidorController {
     }
 
     @GetMapping("/tiempopromedioentrega")
-    public List<Map<String, Object>> obtenerTiempoPromedioEntrega() {
-        return repartidorService.obtenerTiempoPromedioEntregaPorRepartidor();
+    public List<Map<String, Object>> obtenerTiempoPromedioEntrega(@RequestParam(defaultValue = "1") int page,
+                                                                  @RequestParam(defaultValue = "10") int size) {
+        return repartidorService.obtenerTiempoPromedioEntregaPorRepartidor(page, size);
     }
 
     @GetMapping("/mejoresrepartidores")

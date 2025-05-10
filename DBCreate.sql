@@ -1,6 +1,6 @@
 -- 1. Crear la base de datos
 
-CREATE DATABASE "lab1_grupo1"
+CREATE DATABASE "lab1_grupo3"
     WITH
     OWNER = postgres
     ENCODING = 'UTF8'
@@ -13,7 +13,7 @@ CREATE DATABASE "lab1_grupo1"
     TEMPLATE = template0;
 
 -- 2. Conectarse a la base de datos
-\connect lab1_grupo1
+\connect lab1_grupo3
 
 -- 3. Crear las tablas
 
@@ -293,3 +293,131 @@ BEGIN
     );
 END;
 $$ LANGUAGE plpgsql;
+
+
+
+
+--TRIGGERS:
+--Trigger: Insertar automáticamente la fecha de entrega al marcar como entregado.
+
+CREATE OR REPLACE FUNCTION actualizar_fecha_entrega()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Si el nuevo estado es 'Entregado' y antes no lo era
+    IF NEW.estado = 'Entregado' AND (OLD.estado IS DISTINCT FROM 'Entregado') THEN
+        NEW.fecha_entrega := CURRENT_DATE;
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+
+--Trigger: Insertar una calificación automática si no se recibe en 48 horas.
+CREATE OR REPLACE FUNCTION insertar_calificacion_automatica()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Verificar que el estado es "Entregado"
+    IF NEW.estado = 'Entregado' AND (OLD.estado IS DISTINCT FROM 'Entregado') THEN
+        RAISE NOTICE 'Estado es "Entregado".';
+
+        -- Verificar si han pasado 48 horas desde la fecha de pedido
+        IF CURRENT_DATE - NEW.fecha_pedido >= 2 THEN
+            RAISE NOTICE 'Han pasado más de 48 horas desde el pedido.';
+
+            -- Verificar si no existe una calificación para este repartidor y fecha de entrega
+            IF NOT EXISTS (
+                SELECT 1 FROM Calificaciones
+                WHERE id_repartidor = NEW.id_repartidor
+                AND fecha_calificacion = NEW.fecha_entrega
+            ) THEN
+                -- Insertar la calificación
+                INSERT INTO Calificaciones (
+                    id_repartidor, puntuacion, comentario, fecha_calificacion
+                ) VALUES (
+                    NEW.id_repartidor, 3,
+                    'Calificación automática por no responder en 48 horas',
+                    NEW.fecha_entrega
+                );
+                RAISE NOTICE 'Calificación insertada.';
+            ELSE
+                RAISE NOTICE 'Ya existía una calificación para ese repartidor y fecha.';
+            END IF;
+        ELSE
+            RAISE NOTICE 'Aún no han pasado 48 horas desde el pedido.';
+        END IF;
+    ELSE
+        RAISE NOTICE 'Estado no es "Entregado" o no ha cambiado.'; --este no sé si dejarlo porque sale aunque solo se cambie el estado
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+
+--Trigger: Registrar una notificación si se detecta un problema crítico en el pedido.
+CREATE OR REPLACE FUNCTION registrar_problema_critico()
+RETURNS TRIGGER AS $$
+DECLARE
+    v_descripcion TEXT;
+BEGIN
+    -- Problema: Pedido cancelado
+    IF NEW.estado = 'Cancelado' AND (OLD.estado IS DISTINCT FROM 'Cancelado') THEN
+        v_descripcion := 'El pedido ha sido cancelado por un motivo no especificado.';
+
+        INSERT INTO Notificacion (
+            id_pedido, fecha_creacion, mensaje, tipo, leida, descripcion
+        ) VALUES (
+            NEW.id_pedido,
+            CURRENT_DATE,
+            FORMAT('El pedido #%s ha sido cancelado.', NEW.id_pedido),
+            'Problema crítico',
+            FALSE,
+            v_descripcion
+        );
+    END IF;
+
+    -- Problema: Pedido confirmado sin repartidor
+    IF NEW.estado = 'Confirmado' AND (OLD.estado IS DISTINCT FROM 'Confirmado') THEN
+        IF NEW.id_repartidor IS NULL THEN
+            v_descripcion := 'El pedido fue confirmado pero no tiene repartidor asignado.';
+
+            INSERT INTO Notificacion (
+                id_pedido, fecha_creacion, mensaje, tipo, leida, descripcion
+            ) VALUES (
+                NEW.id_pedido,
+                CURRENT_DATE,
+                FORMAT('Pedido #%s confirmado sin repartidor asignado.', NEW.id_pedido),
+                'Problema crítico',
+                FALSE,
+                v_descripcion
+            );
+        END IF;
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+
+--Crear el trigger
+CREATE TRIGGER trigger_actualizar_fecha_entrega
+BEFORE UPDATE ON Pedido
+FOR EACH ROW
+EXECUTE FUNCTION actualizar_fecha_entrega();
+
+CREATE TRIGGER trigger_insertar_calificacion_automatica
+AFTER UPDATE ON Pedido
+FOR EACH ROW
+EXECUTE FUNCTION insertar_calificacion_automatica();
+
+CREATE TRIGGER trigger_problema_critico_pedido
+AFTER UPDATE ON Pedido
+FOR EACH ROW
+EXECUTE FUNCTION registrar_problema_critico();

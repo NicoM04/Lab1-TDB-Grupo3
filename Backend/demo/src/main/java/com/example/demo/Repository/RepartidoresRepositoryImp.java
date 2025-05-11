@@ -118,17 +118,16 @@ public class RepartidoresRepositoryImp implements RepartidoresRepository {
     @Override
     public List<Map<String, Object>> obtenerTop3RepartidoresConMejorRendimiento() {
         String sql = """
-        SELECT r.id_repartidor,
-               r.nombre_repartidor,
-               r.cantidad_entregas,
-               COALESCE(AVG(c.valor), 0) AS promedio_calificacion,
-               -- Métrica compuesta para ordenamiento
-               (r.cantidad_entregas * 0.5 + COALESCE(AVG(c.valor), 0) * 10) AS puntaje_rendimiento
-        FROM repartidor r
-        LEFT JOIN calificacion c ON r.id_repartidor = c.id_repartidor
-        GROUP BY r.id_repartidor, r.nombre_repartidor, r.cantidad_entregas
-        ORDER BY puntaje_rendimiento DESC
-        LIMIT 3
+    SELECT r.id_repartidor,
+           r.nombre_repartidor,
+           r.cantidad_entregas,
+           COALESCE(AVG(c.puntuacion), 0) AS promedio_calificacion,
+           (r.cantidad_entregas * 0.5 + COALESCE(AVG(c.puntuacion), 0) * 10) AS puntaje_rendimiento
+    FROM Repartidores r
+    LEFT JOIN Calificaciones c ON r.id_repartidor = c.id_repartidor
+    GROUP BY r.id_repartidor, r.nombre_repartidor, r.cantidad_entregas
+    ORDER BY puntaje_rendimiento DESC
+    LIMIT 3
     """;
 
         try (var conn = sql2o.open()) {
@@ -140,4 +139,5 @@ public class RepartidoresRepositoryImp implements RepartidoresRepository {
             return null;
         }
     }
+
 }

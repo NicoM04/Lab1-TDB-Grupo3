@@ -140,15 +140,16 @@ public class ClienteRepositoryImp implements ClienteRepository {
     public Cliente getClienteMayorGasto() {
         try (var con = sql2o.open()) {
             String sql = """
-            SELECT c.* 
-            FROM cliente c 
-            JOIN pedido p ON c.id_cliente = p.id_cliente 
-            JOIN medio_pago m ON p.id_pedido = m.id_pedido 
-            WHERE p.estado = 'entregado' 
-            GROUP BY c.id_cliente 
-            ORDER BY SUM(m.monto_total) DESC 
-            LIMIT 1
-            """;
+        SELECT c.* 
+        FROM Cliente c 
+        JOIN Pedido p ON c.id_cliente = p.id_cliente 
+        JOIN Medios_de_pago m ON p.id_pago = m.id_pago 
+        WHERE p.estado = 'Finalizado' 
+        GROUP BY c.id_cliente, c.nombre_cliente, c.contrasena_cliente, 
+                 c.correo_cliente, c.direccion, c.telefono, c.fecha_registro
+        ORDER BY SUM(m.monto_total) DESC 
+        LIMIT 1
+        """;
 
             return con.createQuery(sql)
                     .executeAndFetchFirst(Cliente.class);
@@ -157,6 +158,7 @@ public class ClienteRepositoryImp implements ClienteRepository {
             return null;
         }
     }
+
 
 
 }

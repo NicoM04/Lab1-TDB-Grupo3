@@ -86,7 +86,7 @@ public class EmpresasAsociadasRepositoryImp implements EmpresasAsociadasReposito
         SELECT e.*
         FROM empresas_asociadas e
         JOIN pedido p ON e.id_empresa = p.id_empresa
-        WHERE p.estado = 'fallido'
+        WHERE p.estado = 'Cancelado'
         GROUP BY e.id_empresa
         ORDER BY COUNT(p.id_pedido) DESC
         LIMIT :size OFFSET :offset

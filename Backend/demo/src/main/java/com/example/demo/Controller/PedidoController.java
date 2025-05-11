@@ -32,6 +32,7 @@ public class PedidoController {
         return pedidoService.obtenerTodos(page, size);
     }
 
+    //Aún no se usa el frontend
     @GetMapping("/resumenCliente/{id}")
     public List<ResumenPedidoDTO> getResumenPorCliente(@PathVariable Integer id) {
         return pedidoService.obtenerResumenPorCliente(id);

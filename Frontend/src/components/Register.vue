@@ -35,6 +35,29 @@
         />
       </div>
 
+      <div class="form-group">
+        <label for="direccion">Dirección</label>
+        <input
+          type="text"
+          id="direccion"
+          v-model="direccion"
+          required
+          placeholder="Ingresa tu dirección"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="telefono">Teléfono</label>
+        <input
+          type="text"
+          id="telefono"
+          v-model="telefono"
+          required
+          placeholder="Ingresa tu teléfono"
+        />
+      </div>
+
+
       <button type="submit">Registrarse</button>
     </form>
     <p>
@@ -44,7 +67,7 @@
 </template>
 
 <script>
-import ClienteService from '@/services/Cliente.service'; // Importar el service
+import ClienteService from '@/services/Cliente.service'; 
 
 export default {
   data() {
@@ -52,22 +75,24 @@ export default {
       name: "",
       email: "",
       password: "",
+      direccion: "",
+      telefono: "",
+      fecha_registro: new Date().toISOString().slice(0, 19), // Establecer la fecha actual como predeterminada
     };
   },
   methods: {
     async handleRegister() {
       try {
         // Llamar al método del service para registrar el cliente
-        const token = localStorage.getItem("jwt"); // Asegúrate de tener un token de autenticación (si es necesario)
-        
-        // Usar el service de registro
         const response = await ClienteService.registerCliente(
           {
             nombre_cliente: this.name,
             correo_cliente: this.email,
             contrasena_cliente: this.password,
-          },
-          token
+            direccion: this.direccion,
+            telefono: this.telefono,
+            fecha_registro: this.fecha_registro, 
+          }
         );
 
         // Si el registro es exitoso, redirigir al login

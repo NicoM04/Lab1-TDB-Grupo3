@@ -1,12 +1,8 @@
 import httpClient from "@/http-common";
 
 // Registrar un nuevo cliente
-const registerCliente = (cliente, token) => {
-  return httpClient.post('/cliente/register', cliente, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+const registerCliente = (cliente) => {
+  return httpClient.post('/cliente/register', cliente);
 };
 
 // Iniciar sesión de un cliente

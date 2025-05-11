@@ -34,4 +34,9 @@ public class CalificacionService {
     public void delete(Integer id) {
         calificacionRepository.delete(id);
     }
+
+    // Método que obtiene todas las calificaciones de un repartidor por su id
+    public List<Calificacion> getCalificacionesByRepartidorId(Integer idRepartidor) {
+        return calificacionRepository.findByIdRepartidor(idRepartidor);
+    }
 }

@@ -9,4 +9,5 @@ public interface CalificacionRepository {
     public String update(Calificacion calificacion, Integer id);
     public void delete(Integer id);
     public Calificacion findById(Integer id);
+    List<Calificacion> findByIdRepartidor(Integer idRepartidor);
 }

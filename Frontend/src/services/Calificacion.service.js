@@ -45,10 +45,21 @@ const deleteCalificacion = (id, token) => {
   });
 };
 
+// Obtener calificaciones por id_repartidor
+const getCalificacionesByRepartidorId = (idRepartidor, token) => {
+  return httpClient.get(`/calificacion/getAllByRepartidor/${idRepartidor}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+
 export default {
   createCalificacion,
   getAllCalificaciones,
   getCalificacionById,
   updateCalificacion,
   deleteCalificacion,
+  getCalificacionesByRepartidorId,
 };

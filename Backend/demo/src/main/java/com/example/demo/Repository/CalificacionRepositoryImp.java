@@ -78,4 +78,16 @@ public class CalificacionRepositoryImp implements CalificacionRepository {
                     .executeAndFetchFirst(Calificacion.class);
         }
     }
+
+
+    // Método para obtener todas las calificaciones por id_repartidor
+    @Override
+    public List<Calificacion> findByIdRepartidor(Integer idRepartidor) {
+        String sql = "SELECT * FROM calificaciones WHERE id_repartidor = :id_repartidor";
+        try (var con = sql2o.open()) {
+            return con.createQuery(sql)
+                    .addParameter("id_repartidor", idRepartidor)
+                    .executeAndFetch(Calificacion.class);
+        }
+    }
 }

@@ -26,14 +26,14 @@
           <tr>
             <th>Repartidor</th>
             <th>Entregas Completadas</th>
-            <th>Puntuación</th>
+            <th>Puntuación Promedio</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="repartidor in repartidoresDesempeno" :key="repartidor.id">
+          <tr v-for="repartidor in repartidoresDesempeno" :key="repartidor.id_repartidor">
             <td>{{ repartidor.nombre_repartidor }}</td>
             <td>{{ repartidor.cantidad_entregas }}</td>
-            <td>{{ repartidor.puntuacion }}</td>
+            <td>{{ repartidor.puntuacionPromedio.toFixed(2) }}</td> <!-- Mostrar puntuación promedio -->
           </tr>
         </tbody>
       </table>
@@ -61,7 +61,7 @@ export default {
     async obtenerRepartidores() {
       const token = localStorage.getItem("jwt"); // Obtener el token del localStorage
       try {
-        const response = await RepartidorService.getAllRepartidores(token); // Llamar al servicio para obtener los repartidores
+        const response = await RepartidorService.getAllRepartidores(token); // Llamamos al servicio para obtener los repartidores
         this.repartidores = response.data; // Asignamos los repartidores obtenidos
         this.obtenerDesempenoRepartidores(); // Obtener el desempeño de los repartidores
       } catch (error) {
@@ -74,15 +74,37 @@ export default {
       const token = localStorage.getItem("jwt"); // Obtener el token del localStorage
       try {
         const response = await RepartidorService.getAllRepartidores(token); // Llamamos al servicio para obtener los repartidores
-        let repartidoresDesempeno = await Promise.all(response.data.map(async (repartidor) => {
-          // Obtener calificación de cada repartidor
-          const calificacionResponse = await CalificacionService.getCalificacionById(repartidor.id_repartidor, token);
-          const calificacion = calificacionResponse.data;
 
+        let repartidoresDesempeno = await Promise.all(response.data.map(async (repartidor) => {
+          // Obtener todas las calificaciones de cada repartidor
+          const calificacionResponse = await CalificacionService.getCalificacionesByRepartidorId(repartidor.id_repartidor, token);
+          const calificaciones = calificacionResponse.data;
+
+
+          // Sumar las puntuaciones
+          let totalPuntuaciones = 0;
+          let cantidadCalificaciones = 0;
+
+          // Verificar que calificaciones sea un arreglo
+          if (calificaciones && Array.isArray(calificaciones)) {
+            calificaciones.forEach((calificacion) => {
+              if (calificacion.puntuacion) {
+                totalPuntuaciones += calificacion.puntuacion; // Sumamos las puntuaciones
+                cantidadCalificaciones++; // Contamos cuántas calificaciones tiene
+              }
+            });
+          }
+
+          // Calcular el promedio solo si tiene calificaciones
+          let puntuacionPromedio = 0;
+          if (cantidadCalificaciones > 0) {
+            puntuacionPromedio = totalPuntuaciones / cantidadCalificaciones; // Promedio
+          }
           // Asociar los datos de desempeño
           return {
             ...repartidor,
-            puntuacion: calificacion.puntuacion, // Tomamos la puntuación de la calificación
+            puntuacionPromedio: puntuacionPromedio, // Asignamos el promedio de las puntuaciones
+            cantidad_entregas: repartidor.cantidad_entregas, // Mantenemos la cantidad de entregas
           };
         }));
 
@@ -91,6 +113,8 @@ export default {
         console.error("Error al obtener desempeño de repartidores", error); // En caso de error, lo mostramos en consola
       }
     },
+
+
 
     // Filtrar desempeño según repartidor seleccionado
     filtrarDesempeno() {
@@ -102,14 +126,14 @@ export default {
           const encontrado = this.repartidoresDesempeno.find(r => r.id_repartidor === idSeleccionado);
           return {
             ...repartidor,
-            puntuacion: encontrado ? encontrado.puntuacion : 'N/A',
-            cantidad_entregas: repartidor.cantidad_entregas
+            puntuacionPromedio: encontrado ? encontrado.puntuacionPromedio : 'N/A', // Se muestra la puntuación promedio
+            cantidad_entregas: repartidor.cantidad_entregas,
           };
         });
       } else {
         this.obtenerDesempenoRepartidores(); // Sin filtro
       }
-    }
+    },
   },
 };
 </script>

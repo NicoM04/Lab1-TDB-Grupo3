@@ -29,7 +29,7 @@ public class CalificacionController {
     public List<Calificacion> obtenerTodos(@RequestParam(defaultValue = "1") int page,
                                            @RequestParam(defaultValue = "10") int size) {
         return calificacionService.getAll(page, size);
-    }
+   }
 
 
     @GetMapping("/getById/{id}")
@@ -49,5 +49,17 @@ public class CalificacionController {
     @DeleteMapping("/delete/{id}")
     public void eliminarCalificacion(@PathVariable Integer id) {
         calificacionService.delete(id);
+    }
+
+    // Endpoint para obtener todas las calificaciones de un repartidor por su id
+    @GetMapping("/getAllByRepartidor/{idRepartidor}")
+    public ResponseEntity<List<Calificacion>> getCalificacionesByRepartidorId(@PathVariable("idRepartidor") Integer idRepartidor) {
+        List<Calificacion> calificaciones = calificacionService.getCalificacionesByRepartidorId(idRepartidor);
+
+        if (calificaciones.isEmpty()) {
+            return ResponseEntity.noContent().build(); // Si no hay calificaciones, retorna un código 204
+        }
+
+        return ResponseEntity.ok(calificaciones); // Retorna las calificaciones con un código 200
     }
 }

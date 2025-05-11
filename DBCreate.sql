@@ -269,7 +269,7 @@ BEGIN
     ELSIF v_estado_actual = 'Entregado' AND p_nuevo_estado = 'Finalizado' THEN
         NULL;
     ELSE
-        RAISE EXCEPTION 'Transición inválida de estado: "%" → "%".', v_estado_actual, p_nuevo_estado;
+        RAISE EXCEPTION 'Transicion invalida de estado: "%" → "%".', v_estado_actual, p_nuevo_estado;
     END IF;
 
     -- Actualizar estado del pedido
@@ -325,7 +325,7 @@ BEGIN
 
         -- Verificar si han pasado 48 horas desde la fecha de pedido
         IF CURRENT_DATE - NEW.fecha_pedido >= 2 THEN
-            RAISE NOTICE 'Han pasado más de 48 horas desde el pedido.';
+            RAISE NOTICE 'Han pasado mas de 48 horas desde el pedido.';
 
             -- Verificar si no existe una calificación para este repartidor y fecha de entrega
             IF NOT EXISTS (
@@ -338,18 +338,18 @@ BEGIN
                     id_repartidor, puntuacion, comentario, fecha_calificacion
                 ) VALUES (
                     NEW.id_repartidor, 3,
-                    'Calificación automática por no responder en 48 horas',
+                    'Calificacion automatica por no responder en 48 horas',
                     NEW.fecha_entrega
                 );
-                RAISE NOTICE 'Calificación insertada.';
+                RAISE NOTICE 'Calificacion insertada.';
             ELSE
-                RAISE NOTICE 'Ya existía una calificación para ese repartidor y fecha.';
+                RAISE NOTICE 'Ya existia una calificacion para ese repartidor y fecha.';
             END IF;
         ELSE
-            RAISE NOTICE 'Aún no han pasado 48 horas desde el pedido.';
+            RAISE NOTICE 'Aun no han pasado 48 horas desde el pedido.';
         END IF;
     ELSE
-        RAISE NOTICE 'Estado no es "Entregado" o no ha cambiado.'; --este no sé si dejarlo porque sale aunque solo se cambie el estado
+        RAISE NOTICE 'Estado no es "Entregado" o no ha cambiado.'; 
     END IF;
 
     RETURN NEW;
@@ -375,7 +375,7 @@ BEGIN
             NEW.id_pedido,
             CURRENT_DATE,
             FORMAT('El pedido #%s ha sido cancelado.', NEW.id_pedido),
-            'Problema crítico',
+            'Problema critico',
             FALSE,
             v_descripcion
         );
@@ -392,7 +392,7 @@ BEGIN
                 NEW.id_pedido,
                 CURRENT_DATE,
                 FORMAT('Pedido #%s confirmado sin repartidor asignado.', NEW.id_pedido),
-                'Problema crítico',
+                'Problema critico',
                 FALSE,
                 v_descripcion
             );

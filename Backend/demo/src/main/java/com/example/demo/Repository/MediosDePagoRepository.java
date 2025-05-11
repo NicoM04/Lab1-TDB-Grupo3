@@ -11,5 +11,5 @@ public interface MediosDePagoRepository {
     public String update(MedioDePago medioPago, Integer id);
     public void delete(Integer id);
 
-    public String obtenerMetodoPagoMasUsadoEnPedidosUrgentes();
+    public List<String> obtenerMetodoPagoMasUsadoEnPedidosUrgentes();
 }

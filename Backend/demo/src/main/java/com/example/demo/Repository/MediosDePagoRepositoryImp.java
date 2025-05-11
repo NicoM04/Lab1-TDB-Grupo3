@@ -85,19 +85,17 @@ public class MediosDePagoRepositoryImp implements MediosDePagoRepository {
 
     //CONSULTA SQL COMPLEJA 6)
     @Override
-    public String obtenerMetodoPagoMasUsadoEnPedidosUrgentes() {
+    public List<String> obtenerMetodoPagoMasUsadoEnPedidosUrgentes() {
         String sql = """
-            SELECT mp.metodo_pago
-            FROM medios_de_pago mp
-            JOIN pedido p ON mp.id_pago = p.id_pedido
-            WHERE p.urgente = TRUE
-            GROUP BY mp.metodo_pago
-            ORDER BY COUNT(*) DESC
-            LIMIT 1
-        """;
+        SELECT DISTINCT mp.metodo_pago
+        FROM medios_de_pago mp
+        JOIN pedido p ON mp.id_pago = p.id_pedido
+        WHERE p.urgente = TRUE
+    """;
         try (var con = sql2o.open()) {
             return con.createQuery(sql)
-                    .executeScalar(String.class);
+                    .executeAndFetch(String.class);
         }
     }
+
 }

@@ -34,7 +34,7 @@ public class MediosDePagoService {
         mediosDePagoRepository.delete(id);
     }
 
-    public String obtenerMetodoPagoMasUsadoEnPedidosUrgentes(){
+    public List<String> obtenerMetodoPagoMasUsadoEnPedidosUrgentes(){
         return mediosDePagoRepository.obtenerMetodoPagoMasUsadoEnPedidosUrgentes();
     }
 }

@@ -51,7 +51,7 @@ public class MediosDePagoController {
 
     // Obtener medio de pago más utilizado en pedidos urgentes
     @GetMapping("/masutilizadourgentes")
-    public String obtenerMedioDePagoMasUtilizadoEnPedidosUrgentes() {
+    public List<String> obtenerMedioDePagoMasUtilizadoEnPedidosUrgentes() {
         return mediosDePagoService.obtenerMetodoPagoMasUsadoEnPedidosUrgentes();
     }
 }

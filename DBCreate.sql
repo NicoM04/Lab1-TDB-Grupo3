@@ -405,19 +405,78 @@ $$ LANGUAGE plpgsql;
 
 
 
+--Trigger extra: Agregar validaciones especiales en triggers según el tipo de producto/servicio.
+CREATE OR REPLACE FUNCTION validar_detalle_pedido()
+RETURNS TRIGGER AS $$
+DECLARE
+    v_categoria VARCHAR(50);
+    v_urgente BOOLEAN;
+    v_id_repartidor INT;
+    v_entregas INT;
+BEGIN
+    -- Obtener categoría del producto
+    SELECT categoria INTO v_categoria
+    FROM ProductoServicio
+    WHERE id_producto = NEW.id_producto;
 
---Crear el trigger
+    -- Obtener si el pedido es urgente y el id_repartidor
+    SELECT urgente, id_repartidor
+    INTO v_urgente, v_id_repartidor
+    FROM Pedido
+    WHERE id_pedido = NEW.id_pedido;
+
+    -- Obtener cantidad de entregas del repartidor
+    SELECT cantidad_entregas INTO v_entregas
+    FROM Repartidores
+    WHERE id_repartidor = v_id_repartidor;
+
+    -- Validaciones específicas por categoría
+    IF v_categoria = 'Documento Legal' THEN
+        IF NOT v_urgente THEN
+            RAISE EXCEPTION 'Los documentos legales solo pueden enviarse con pedidos urgentes.';
+        END IF;
+        IF NEW.cantidad > 1 THEN
+            RAISE EXCEPTION 'Solo se permite una unidad por pedido para documentos legales.';
+        END IF;
+
+    ELSIF v_categoria = 'Certificado Oficial' THEN
+        IF v_entregas < 5 THEN
+            RAISE EXCEPTION 'El repartidor debe tener al menos 5 entregas para transportar certificados oficiales.';
+        END IF;
+        IF NEW.cantidad > 1 THEN
+            RAISE EXCEPTION 'Solo se permite una unidad por pedido para certificados oficiales.';
+        END IF;
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+
+--Crear los triggers
+
+
 CREATE TRIGGER trigger_actualizar_fecha_entrega
 BEFORE UPDATE ON Pedido
 FOR EACH ROW
 EXECUTE FUNCTION actualizar_fecha_entrega();
+
 
 CREATE TRIGGER trigger_insertar_calificacion_automatica
 AFTER UPDATE ON Pedido
 FOR EACH ROW
 EXECUTE FUNCTION insertar_calificacion_automatica();
 
+
 CREATE TRIGGER trigger_problema_critico_pedido
 AFTER UPDATE ON Pedido
 FOR EACH ROW
 EXECUTE FUNCTION registrar_problema_critico();
+
+
+CREATE TRIGGER trigger_validar_detalle
+BEFORE INSERT OR UPDATE ON detalle_de_pedido
+FOR EACH ROW
+EXECUTE FUNCTION validar_detalle_pedido();
